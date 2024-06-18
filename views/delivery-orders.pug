@@ -1,0 +1,144 @@
+extends layout 
+
+block styleBlock 
+    style.
+
+        select.form-control { height: 40px }
+
+        .dropdown-toggle::after {
+            content: unset !important
+        }
+
+block content 
+    .container 
+        .row
+            .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
+                if admin || trucker
+                    .mb-4.ps-4
+                        form(action='/delivery-orders' method='get')#filter-orders
+                            .row
+                                .col-md-3.col-sm-8
+                                    select.form-control(name='status' required)
+                                        option(value='') -- Filter by status --
+                                        option(value='picked up') Picked Up
+                                        option(value='pending') Pending
+                                        option(value='in progress') In Progess 
+                                        option(value='delivered') Delivered 
+                                        option(value='complete') Completed
+                                .col-md-2
+                                    button.btn.btn-secondary(type='submit') 
+                                        i.fa.fa-filter  
+                                        | &nbsp;Filter
+                    table.table
+                        thead 
+                            tr 
+                                th Date 
+                                th Warehouse 
+                                th Store
+                                th Order#
+                                th Size (ft<sup>3</sup>)
+                                th.text-end Cost ($)
+                                th Paid
+                                th Status
+                                th Trucker
+                                th
+                        tbody 
+                            each order in orders 
+                                tr 
+                                    td.ps-3 #{view.formatDate(order.createdAt)} 
+                                        .text-muted 
+                                            small #{view.getTime(order.createdAt)}
+                                    td #{order.Warehouse.name} 
+                                        div 
+                                            small.text-muted [ #{order.Warehouse.DeliveryRegion.name} ]
+                                    td
+                                        div 
+                                            | #{order.store.fullname}
+                                        //- .mt-2 
+                                        //-     | #{order.User.address}
+                                    td= order.orderNo 
+                                    td= order.orderSize 
+                                        | ft<sup>3</sup>
+                                    td.text-end $#{view.formatCurrency(order.cost)}
+                                    if order.status == 'complete'
+                                        td Yes
+                                    else 
+                                        td No
+                                    td= order.status
+                                    td= order.trucker.fullname && order.trucker.fullname.split(' ')[0]
+                                    td.align-center
+                                        .dropdown
+                                            .pt-2.bg-light.text-center.dropdown-toggle#dropdownMenu(data-bs-toggle="dropdown" aria-expanded="false" style='border-radius: 50%; width: 40px; height: 40px; cursor: pointer')
+                                                i.fa.fa-ellipsis-v
+                                            ul.dropdown-menu(aria-labelledby="dropdownMenu" data-order_id=`${order.id}`) 
+                                                if admin
+                                                    li 
+                                                        a.dropdown-item(href="#" data-action="cancelled") Cancel
+                                                else
+                                                    li  
+                                                        a.dropdown-item(href="#" data-action="picked up") Pick Up 
+                                                    //- li 
+                                                    //-     a.dropdown-item(href="#" data-action="delivered") Delivered
+                                                    //- li 
+                                                    //-     a.dropdown-item(href="#" data-action="complete") Complete
+
+
+                else if user 
+                    table.table
+                        thead 
+                            tr 
+                                th Date 
+                                th Warehouse 
+                                th Order# 
+                                th Size (ft<sup>3</sup>)
+                                th Cost ($)
+                                th Status
+                        tbody 
+                            each order in orders 
+                                tr 
+                                    td= view.formatDate(order.createdAt)
+                                    td #{order.Warehouse.name} 
+                                        div 
+                                            small.text-muted [ #{order.Warehouse.DeliveryRegion.name} ]
+                                    td= order.orderNo 
+                                    td= order.orderSize 
+                                        | ft<sup>3</sup>
+                                    td.text-end $#{view.formatCurrency(order.cost)}
+                                    td= order.status
+
+
+block scriptBlock
+    script. 
+        const menus = document.getElementsByClassName("dropdown-item");
+        let action;
+        for (let i = 0; i < menus.length; i++) {
+            menus[i].addEventListener("click", function() {
+                action = this.dataset.action;
+                let message = 'Are you sure you want to continue with this operation?';
+                if (action == 'complete') {
+                    message = 'Marking this delivery as "Completed" means it\'s delivered and paid for. Continue?'
+                } else if (action == 'delivered') {
+                    message = 'Marking this delivery as "Delivered" means it\'s delivered but not yet paid for. Continue?';
+                } else if (action == 'picked up') {
+                    message = 'Are you sure you have picked up this order from the warehouse?'
+                }
+                if (confirm(message)) {
+                    const order_id = this.closest('ul').dataset.order_id;
+                    const data = { action, order_id };
+                    fetch('update-order', {
+                        method: 'POST', 
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data) 
+                    }).then(d => d.json())
+                    .then(d => {
+                        if (d.status.trim() == 'success') {
+                            location.reload()
+                        } else {
+                            alert(d.message)
+                        }
+                    });
+                }
+            });
+        }   

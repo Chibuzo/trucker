@@ -1,0 +1,46 @@
+extends layout 
+
+block styleBlock 
+    style.
+        body {
+            background: #f9f9f9
+        }
+
+        select.form-control { height: 40px }
+
+block content 
+    .container 
+        .row
+            .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
+                table.table.table-striped
+                    thead 
+                        tr 
+                            th Date 
+                            th Warehouse 
+                            th Store
+                            th Order#
+                            th Size (ft<sup>3</sup>)
+                            th.text-end Cost ($)
+                            th %
+                            th.text-end Gain ($)
+                    tbody 
+                        each order in orders 
+                            tr 
+                                td.ps-3 #{view.formatDate(order.createdAt)} 
+                                td #{order.Warehouse.name} 
+                                    div 
+                                        small.text-muted [ #{order.Warehouse.DeliveryRegion.name} ]
+                                td
+                                    div 
+                                        | #{order.store.fullname}
+                                td= order.orderNo 
+                                td= order.orderSize 
+                                    | ft<sup>3</sup>
+                                td.text-end= view.formatCurrency(order.cost)
+                                td= order.percentage 
+                                    | %
+                                td.text-end $#{view.formatCurrency((order.percentage / 100) * order.cost)}
+
+
+block scriptBlock
+    script. 

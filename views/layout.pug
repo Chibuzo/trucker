@@ -1,0 +1,77 @@
+doctype html
+head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    link(href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap' rel='stylesheet')
+    link(rel='stylesheet' href='/css/fontawesome-min.css')
+    link(href='/css/style.css' rel="stylesheet")
+    link(rel='stylesheet' href='/css/bootstrap.min.css')
+    style. 
+        body {
+            background: #f9f9f9
+        }
+
+        .btn-outline-warning {
+            border-color: #eed484;
+            color: #333
+        }
+    block styleBlock
+    title Osman Delivery Services
+body
+    .container 
+        header.d-flex.flex-wrap.align-items-center.justfy-content-center.justfy-content-md-between.py-3.mb-4
+            //- h3.mt-2 Osman
+            //- div 
+            //-     a.d-flex.align-items-center.col-md-3.mb-2.mb-md-0.text-dark.text-decoration-none(href='/') Home
+
+            .col-9
+                //- img(src="/images/msc_logo.png" width="8%")
+                h3.mt-2 Osman
+                ul.nav 
+                    li.nav-item
+                        a.nav-link.text-dark(href='/delivery-orders') Deliveries
+                    if admin
+                        li.nav-item
+                            a.nav-link.text-dark(href='/reports') Reports
+                        li.nav-item
+                            a.nav-link.text-dark(href='/truckers') Truckers
+                        li.nav-item
+                            a.nav-link.text-dark(href='/settings') Settings
+                    else if trucker 
+                        li.nav-item
+                            a.nav-link.text-dark(href='/my-trips') My Trips
+
+            .col-3.text-end
+                if admin || user
+                    a.btn.btn-outline-warning.me-2(href="/logout") Logout
+                else 
+                    a.btn.btn-outline-warning.me-2(href="/login") Login
+
+
+    block content
+
+
+    .site-footer
+        .container
+            .row.justify-content-center.copyright
+                .col-lg-7.text-center
+                    .widget
+
+                    .widget
+                        p
+                            | Copyright &copy;
+                            script.
+                                document.write(new Date().getFullYear());
+                            |  All rights reserved 
+                        //- .d-block
+                        //-     a.m-2(href='#') Terms &amp; Conditions
+                        //-     | /
+                        //-     a.m-2(href='#') Privacy Policy
+
+    block modals
+
+
+    script(src='/libs/bootstrap/dist/js/bootstrap.bundle.min.js')
+
+
+    block scriptBlock

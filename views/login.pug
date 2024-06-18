@@ -1,0 +1,58 @@
+extends authLayout 
+
+block content 
+    .col-sm-8.col-md-6.col-xl-9
+        .position-relative.text-center.my-4
+            p.mb-0.fs-4.px-3.d-inline-block.bg-white.text-dark.z-index-5.position-relative
+                | Sign in
+            span.border-top.w-100.position-absolute.top-50.start-50.translate-middle
+        .alert.alert-danger.d-none
+        form(method="post" action="/login")#form-login
+            .mb-3
+                label.form-label(for='exampleInputEmail1') Email
+                input.form-control#email(type='email' name="email" aria-describedby='emailHelp' Required)
+            .mb-4
+                label.form-label(for='exampleInputPassword1') Password
+                input.form-control#password(type='password' name="password" Required)
+            .d-flex.align-items-center.justify-content-between.mb-4
+                .form-check
+                    //- input#flexCheckChecked.form-check-input.primary(type='checkbox' value='' checked='')
+                    //- label.form-check-label.text-dark(for='flexCheckChecked')
+                    //-     | Remeber me
+                a.text-primary.fw-medium(href='/reset-password') Forgot Password ?
+            button.btn.btn-dark.w-100.py-8.mb-4.rounded-2(type='submit') Sign In
+            .d-flex.align-items-center.justify-content-center
+                p.fs-4.mb-0.fw-medium Don't have an account?
+                a.text-primary.fw-medium.ms-2(href='register') Create an account
+
+
+block scriptBlock
+    script. 
+
+        document.querySelector("#form-login").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const email = document.querySelector("#email").value;
+            const password = document.querySelector("#password").value;
+
+            const res = await fetch("/login", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password })
+            });
+            const d = await res.json();
+
+            if (d.status.trim() == 'success') {
+                const landingPage = {
+                    store: 'request-delivery',
+                    trucker: 'delivery-orders',
+                    admin: 'delivery-orders'
+                }
+                location.replace(landingPage[d.role]);
+            } else {
+                const alertEle = document.querySelector(".alert-danger");
+                alertEle.innerText = d.message;
+                alertEle.classList.remove('d-none');
+            }
+        });

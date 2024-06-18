@@ -1,0 +1,75 @@
+extend layout
+
+block styleBlock 
+    style. 
+
+        body {
+            background: #f9f9f9
+        }
+
+        .form-control-sm { height: 40px }
+
+        .fa-pencil, .fa-trash { color: #999 }
+
+block content 
+    .container
+        .row.mt-1
+            .col-md-8(style="background: #fff; border-radius: 10px").pt-4.px-4
+                h6 WAREHOUSES
+                table.table 
+                    thead 
+                        tr 
+                            th Warehouse 
+                            th Region 
+                            th(width='110') Action
+                    tbody 
+                        tr 
+                            form(action='/save-warehouse' method='post')
+                                td 
+                                    input.form-control.form-control-sm(name='name' type='text')
+                                td
+                                    select.form-control.form-control-sm(name='regionId')
+                                        option(value='') -- Region --
+                                        each region in regions 
+                                            option(value=`${region.id}`)= region.name
+                                td 
+                                    button.btn.btn-secondary
+                                        i.fa.fa-save 
+                                        | &nbsp;Save
+                        each warehouse in warehouses 
+                            tr 
+                                td= warehouse.name 
+                                td= warehouse.DeliveryRegion.name 
+                                td.text-center 
+                                    a(href=`/edit-warehouse/${warehouse.id}` title="Edit Warehouse" style="margin-right: 9px")
+                                        i.fa.fa-pencil
+
+                                    a.delete(href="#" onClick=`deleteWarehouse(${warehouse.id}, this)` title="Delete Warehouse")
+                                        i.fa.fa-trash
+
+            .col-md-4(style="background: #fff; border-radius: 10px").pt-4.px-4
+                h6 REGIONS 
+                table.table 
+                    thead 
+                        tr 
+                            th Region 
+                            th Action 
+                    tbody 
+                        tr 
+                            form(action='/save-region' method='post')
+                                td 
+                                    input.form-control.form-control-sm(name='name' type='text')
+                                td 
+                                    button.btn.btn-secondary
+                                        i.fa.fa-save 
+                                        | &nbsp;Save
+                        each region in regions
+                            tr 
+                                td= region.name 
+                                td.text-center 
+                                    a(href=`/edit-reqion/${region.id}` title="Edit Region" style="margin-right: 9px")
+                                        i.fa.fa-pencil
+
+                                    a.delete(href="#" onClick=`deleteRegion(${region.id}, this)` title="Delete Region")
+                                        i.fa.fa-trash
+

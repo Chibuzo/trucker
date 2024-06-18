@@ -1,0 +1,19 @@
+[Unit]
+Description=Node.js Police Tracker Service         
+After=network.target
+Requires=After=mysql.service       # Requires the mysql service to run fir>
+
+[Service]
+WorkingDirectory=/home/ubuntu/cases
+ExecStart=npm start
+Restart=on-failure
+
+Environment=NODE_ENV=production PORT=80 DB_USER=chibuzo DB_PASSWORD= DB_HOST=localhost DB_NAME=policeTrackr
+
+
+[Install]
+WantedBy=multi-user.target
+
+#sudo nano /lib/systemd/system/inec.service
+#sudo systemctl daemon-reload
+#systemctl enable cases

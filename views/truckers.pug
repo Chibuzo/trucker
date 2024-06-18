@@ -1,0 +1,90 @@
+extend layout
+
+block content 
+    .container 
+        .row.mb-4 
+            .col 
+                h5 TRUCKERS
+            .col
+                button.btn.btn-secondary.float-end(data-bs-toggle="modal" data-bs-target="#signupModal") Add Trucker 
+        .row.mt-1
+            .col 
+                table.table.table-striped 
+                    thead 
+                        tr 
+                            th Date Added 
+                            th Name 
+                            th Email 
+                            th Phone 
+                            th.text-center(width='180') Action
+                    tbody 
+                        each trucker in truckers 
+                            tr 
+                                td= view.formatDate(trucker.createdAt)
+                                td= trucker.fullname 
+                                td= trucker.email 
+                                td= trucker.phone 
+                                td.text-center
+                                    ul.nav(data-user_id=`${trucker.id}`) 
+                                        li.nav-item 
+                                            a.dropdown-item.nav-link(href="#" data-action="ban" title='Ban this user') 
+                                                i.fa.fa-ban  
+                                                | &nbsp;Ban
+                                        li.nav-item 
+                                            a.dropdown-item.nav-link(href="#" data-action="remove") 
+                                                i.fa.fa-trash  
+                                                | &nbsp;Del
+
+
+block modals
+    #signupModal.modal.fade.modal-lg(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header
+                    h5#staticBackdropLabel.modal-title Add Trucker
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                form(method="post" action="/trucker/create")
+                    .modal-body
+                        .mb-3
+                            input.form-control(type="text" name="fullname" placeholder="Full name" aria-label="Full name" required=true)
+                        .mb-3.row 
+                            .col
+                                input.form-control(type="email" name="email" placeholder="Email" aria-label="Email" required=true)
+                            .col
+                                input.form-control(type="text" name="phone" placeholder="Phone" aria-label="Phone" required=true)
+                        .mb-3.row
+                            .col
+                                input.form-control(type="password" name="password" placeholder="Password" required=true)
+                            .col
+                                input.form-control(type="password" placeholder="Confirm Password" required=true)
+                    .modal-footer
+                        button.btn.btn-secondary(type='submit') Create Trucker
+
+block scriptBlock
+    script. 
+        const menus = document.getElementsByClassName("dropdown-item");
+        let action;
+        for (let i = 0; i < menus.length; i++) {
+            menus[i].addEventListener("click", function() {
+                action = this.dataset.action;
+                let message = '';
+                if (action == 'ban') {
+                    message = 'Are you sure you want to ban this trucker from the system? You can undo the action'
+                } else if (action == 'remove') {
+                    message = 'Are you sure ypu want to remove this trucker?';
+                }
+                if (confirm(message)) {
+                    const user_id = this.closest('ul').dataset.user_id;
+                    const data = { action, user_id };
+                    fetch('update-user-status', {
+                        method: 'POST', 
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data) 
+                    }).then(d => {
+                        location.reload()
+                    });
+                }
+            });
+        }   
