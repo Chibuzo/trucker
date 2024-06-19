@@ -189,20 +189,20 @@ router.get('/activate/:email_hash/:hash_string', async (req, res, next) => {
         const email_hash = req.params.email_hash;
         const hash_string = req.params.hash_string;
         await userService.activateAccount(email_hash, hash_string);
-        res.redirect('/user/activate-account');
+        res.render('login', { title: 'Login', message: 'Your email has been verified. You may now login' });
     } catch (err) {
         logger.error('Email verification failed', { data: err });
         next(err);
     }
 });
 
-router.get('/activate-account', (req, res) => {
-    let user_status = 'active';
-    if (req.query.q && req.query.q === 'inactive') {
-        user_status = 'inactive';
-    }
-    res.render('user/activate-account', { user_status });
-});
+// router.get('/activate-account', (req, res) => {
+//     let user_status = 'active';
+//     if (req.query.q && req.query.q === 'inactive') {
+//         user_status = 'inactive';
+//     }
+//     res.render('user/activate-account', { user_status });
+// });
 
 router.get('/resend-verification-email', async (req, res) => {
     const email = req.session.temp_email || '';
@@ -265,6 +265,15 @@ router.post('/update-incentive', authenticateAdmin, async (req, res, next) => {
         }
         await Percentage.update({ percentage }, { where: {} });
         res.redirect('/reports');
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/setup', async (req, res, next) => {
+    try {
+        await userService.createAdmin();
+        res.end('Done');
     } catch (err) {
         next(err);
     }

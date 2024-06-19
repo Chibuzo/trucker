@@ -7,6 +7,10 @@ block content
                 | Sign in
             span.border-top.w-100.position-absolute.top-50.start-50.translate-middle
         .alert.alert-danger.d-none
+        if message 
+            .alert.alert-success 
+                | #{message}
+
         form(method="post" action="/login")#form-login
             .mb-3
                 label.form-label(for='exampleInputEmail1') Email
@@ -45,9 +49,9 @@ block scriptBlock
 
             if (d.status.trim() == 'success') {
                 const landingPage = {
-                    store: 'request-delivery',
-                    trucker: 'delivery-orders',
-                    admin: 'delivery-orders'
+                    store: '/request-delivery',
+                    trucker: '/delivery-orders',
+                    admin: '/delivery-orders'
                 }
                 location.replace(landingPage[d.role]);
             } else {

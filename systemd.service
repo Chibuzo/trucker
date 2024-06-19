@@ -1,5 +1,5 @@
 [Unit]
-Description=Node.js Police Tracker Service         
+Description=Node.js Trucker Service         
 After=network.target
 Requires=After=mysql.service       # Requires the mysql service to run fir>
 
@@ -8,12 +8,12 @@ WorkingDirectory=/home/ubuntu/cases
 ExecStart=npm start
 Restart=on-failure
 
-Environment=NODE_ENV=production PORT=80 DB_USER=chibuzo DB_PASSWORD= DB_HOST=localhost DB_NAME=policeTrackr
+Environment=NODE_ENV=development PORT=80 DB_USER=chibuzo DB_PASSWORD= DB_HOST=44.202.106.89 DB_NAME=my+s3cretDb#
 
 
 [Install]
 WantedBy=multi-user.target
 
-#sudo nano /lib/systemd/system/inec.service
+#sudo nano /lib/systemd/system/trucker.service
 #sudo systemctl daemon-reload
-#systemctl enable cases
+#sudo systemctl enable trucker

@@ -4,8 +4,6 @@ const bcrypt = require('bcryptjs');
 const { Buffer } = require('buffer');
 const crypto = require('crypto');
 const path = require('path');
-const { generateOTP, sendSMS } = require('./UtillityService');
-const { Op } = require('sequelize');
 const saltRounds = 10;
 const { ErrorHandler } = require('../helpers/errorHandler');
 
@@ -48,7 +46,7 @@ const login = async ({ email, password }) => {
         throw new ErrorHandler(400, 'User inactive')
     }
 
-    if (user.status === 'blocled') {
+    if (user.status === 'blocked') {
         throw new ErrorHandler(400, 'You\'ve been denied access from using this system');
     }
     return sanitize(user);
@@ -134,6 +132,18 @@ const sanitize = user => {
     };
 }
 
+const createAdmin = async () => {
+    const password = await bcrypt.hash('untold', saltRounds);
+    const admin = {
+        fullname: 'Osman Admin',
+        email: 'admin@admin.com',
+        role: 'admin',
+        password,
+        status: 'active'
+    }
+    return User.create(admin);
+}
+
 module.exports = {
     create,
     login,
@@ -144,4 +154,5 @@ module.exports = {
     verifyPasswordResetLink,
     changePassword,
     uploadProfilePhoto,
+    createAdmin
 }

@@ -33,6 +33,7 @@ const BASE_URL = process.env.BASE_URL;
 const SENT_FROM = 'support@dumena.com';
 
 const sendMail = (to, subject, template, data) => {
+    data.appName = APP_NAME;
     let mailOptions = {
         from: APP_NAME + ' <' + SENT_FROM + '>',
         to: to,
