@@ -11,7 +11,7 @@ block content
             .alert.alert-success 
                 | #{message}
 
-        form(method="post" action="/login")#form-login
+        form(method="post" action="/login")#form-login.px-md-0.px-4
             .mb-3
                 label.form-label(for='exampleInputEmail1') Email
                 input.form-control#email(type='email' name="email" aria-describedby='emailHelp' Required)
