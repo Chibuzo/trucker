@@ -121,9 +121,4 @@ module.exports = {
             //console.log('Message sent: %s', info.messageId);
         });
     },
-
-    async emailOtp(email, otp) {
-        const data = { otp };
-        return sendMail(email, 'vExpress Charter Login OTP', 'otp', data);
-    }
 }
