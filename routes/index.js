@@ -149,8 +149,11 @@ router.post('/save-region', authenticateAdmin, async (req, res, next) => {
 
 router.get('/reports', authenticateAdmin, async (req, res, next) => {
     try {
-        const orders = await deliveryService.list();
-        res.render('earnings', { title: 'Earning Report', orders });
+        const [orders, { percentage }] = await Promise.all([
+            deliveryService.list(),
+            Percentage.findOne({})
+        ]);
+        res.render('earnings', { title: 'Earning Report', orders, percentage });
     } catch (err) {
         next(err);
     }
@@ -261,7 +264,7 @@ router.post('/update-incentive', authenticateAdmin, async (req, res, next) => {
     try {
         const { percentage } = req.body;
         if (isNaN(percentage)) {
-            throw new handleError(400, 'Percentage must be a number');
+            throw new handleError(400, 'Percentage must be a number');  
         }
         await Percentage.update({ percentage }, { where: {} });
         res.redirect('/reports');

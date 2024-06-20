@@ -101,7 +101,7 @@ const changePassword = async (newPassword, user_id) => {
 
 const list = async (criteria = {}) => {
     const users = await User.findAll({
-        where: criteria,
+        where: { ...criteria, deleted: false },
         order: [
             ['createdAt', 'DESC']
         ]

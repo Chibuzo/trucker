@@ -16,6 +16,7 @@ block content
                             th Name 
                             th Email 
                             th Phone 
+                            th Status
                             th.text-center(width='180') Action
                     tbody 
                         each trucker in truckers 
@@ -24,10 +25,11 @@ block content
                                 td= trucker.fullname 
                                 td= trucker.email 
                                 td= trucker.phone 
+                                td= trucker.status
                                 td.text-center
                                     ul.nav(data-user_id=`${trucker.id}`) 
                                         li.nav-item 
-                                            a.dropdown-item.nav-link(href="#" data-action="ban" title='Ban this user') 
+                                            a.dropdown-item.nav-link(href="#" data-action="blocked" title='Ban this user') 
                                                 i.fa.fa-ban  
                                                 | &nbsp;Ban
                                         li.nav-item 
@@ -68,7 +70,7 @@ block scriptBlock
             menus[i].addEventListener("click", function() {
                 action = this.dataset.action;
                 let message = '';
-                if (action == 'ban') {
+                if (action == 'blocked') {
                     message = 'Are you sure you want to ban this trucker from the system? You can undo the action'
                 } else if (action == 'remove') {
                     message = 'Are you sure ypu want to remove this trucker?';

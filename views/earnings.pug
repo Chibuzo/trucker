@@ -6,12 +6,21 @@ block styleBlock
             background: #f9f9f9
         }
 
-        select.form-control { height: 40px }
+        input.form-control { height: 40px }
 
 block content 
     .container 
         .row
             .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
+                .mb-4.ps-4
+                    form(action='/update-incentive' method='post')#filter-orders
+                        .row
+                            .col-md-3.col-sm-8
+                                input.form-control(type=number name='percentage' placeholder='Percentage' value=`${percentage}`)
+                            .col-md-2
+                                button.btn.btn-secondary(type='submit') 
+                                    i.fa.fa-save  
+                                    | &nbsp;Update
                 table.table.table-striped
                     thead 
                         tr 
@@ -36,7 +45,7 @@ block content
                                 td= order.orderNo 
                                 td= order.orderSize 
                                     | ft<sup>3</sup>
-                                td.text-end= view.formatCurrency(order.cost)
+                                td.text-end $#{view.formatCurrency(order.cost)}
                                 td= order.percentage 
                                     | %
                                 td.text-end $#{view.formatCurrency((order.percentage / 100) * order.cost)}
