@@ -4,8 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     const Percentage = sequelize.define('Percentage', {
         percentage: {
             type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 0
+            allowNull: false
         }
     }, {
         timestamps: true,
