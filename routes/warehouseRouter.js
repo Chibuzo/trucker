@@ -36,14 +36,13 @@ router.put('/:id', authenticate, async (req, res, next) => {
     }
 });
 
-router.delete('/:id', authenticate, async (req, res, next) => {
+router.delete('/:id', authenticate, async (req, res) => {
     try {
         const { id } = req.params;
         await warehouseService.deleteOne(id);
-        res.redirectt('/admin/warehouses');
+        res.json({ status: 'success' });
     } catch (err) {
-        logger.error('Deleting Warehouse failed', { data: err });
-        next(err);
+        res.json({ status: 'error', message: err.message });
     }
 });
 

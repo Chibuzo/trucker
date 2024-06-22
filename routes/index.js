@@ -183,6 +183,17 @@ router.post('/update-user', authenticateAdmin, async (req, res) => {
     }
 });
 
+router.post('/delete-region', authenticateAdmin, async (req, res) => {
+    try {
+        const { regionId } = req.body;
+        await regionService.deleteOne(regionId);
+        
+    } catch(err) {
+        res.json({ status: 'error', message: err.message });
+    }
+});
+
+
 router.get('/logout', (req, res, next) => {
     req.session.destroy();
     res.redirect('/login');
