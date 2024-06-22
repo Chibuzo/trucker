@@ -13,7 +13,7 @@ block content
     .container 
         .row
             .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
-                if admin || trucker
+                if admin
                     .mb-4.ps-4
                         form(action='/delivery-orders' method='get')#filter-orders
                             .row
@@ -29,6 +29,8 @@ block content
                                     button.btn.btn-secondary(type='submit') 
                                         i.fa.fa-filter  
                                         | &nbsp;Filter
+
+                if admin || trucker
                     table.table
                         thead 
                             tr 
@@ -64,7 +66,19 @@ block content
                                         td Yes
                                     else 
                                         td No
-                                    td= order.status
+                                    td
+                                        if (order.status == 'pending') 
+                                            span.badge.bg-warning
+                                                | #{order.status}
+                                        else if (order.status == 'complete') 
+                                            span.badge.bg-success
+                                                | #{order.status}
+                                        else if (order.status == 'picked up') 
+                                            span.badge.bg-secondary
+                                                | #{order.status}
+                                        else if (order.status == 'cancelled') 
+                                            span.badge.bg-danger
+                                                | #{order.status}
                                     td= order.trucker.fullname && order.trucker.fullname.split(' ')[0]
                                     td.align-center
                                         .dropdown
@@ -75,16 +89,18 @@ block content
                                                     li 
                                                         a.dropdown-item(href="#" data-action="cancelled") Cancel
                                                 else
-                                                    li  
-                                                        a.dropdown-item(href="#" data-action="picked up") Pick Up 
-                                                    //- li 
-                                                    //-     a.dropdown-item(href="#" data-action="delivered") Delivered
-                                                    //- li 
-                                                    //-     a.dropdown-item(href="#" data-action="complete") Complete
+                                                    if page == 'orders'
+                                                        li  
+                                                            a.dropdown-item(href="#" data-action="picked up") Pick Up 
+                                                    else if page == 'trips'
+                                                        li 
+                                                            a.dropdown-item(href="#" data-action="delivered") Delivered
+                                                        li 
+                                                            a.dropdown-item(href="#" data-action="complete") Complete
 
 
                 else if user 
-                    table.table
+                    table.table.table-striped
                         thead 
                             tr 
                                 th Date 
@@ -104,7 +120,19 @@ block content
                                     td= order.orderSize 
                                         | ft<sup>3</sup>
                                     td.text-end $#{view.formatCurrency(order.cost)}
-                                    td= order.status
+                                    td
+                                        if (order.status == 'pending') 
+                                            span.badge.bg-warning
+                                                | #{order.status}
+                                        else if (order.status == 'complete') 
+                                            span.badge.bg-success
+                                                | #{order.status}
+                                        else if (order.status == 'picked up') 
+                                            span.badge.bg-secondary
+                                                | #{order.status}
+                                        else if (order.status == 'cancelled') 
+                                            span.badge.bg-danger
+                                                | #{order.status}
 
 
 block scriptBlock

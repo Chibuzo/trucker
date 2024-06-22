@@ -1,14 +1,22 @@
-extend layout
+extend layout   
+
+block styleBlock 
+    style. 
+        .fa { color: #E52B50 }
+
+        td a { text-decoration: none }
+
 
 block content 
     .container 
         .row.mb-4 
-            .col 
-                h5 TRUCKERS
-            .col
-                button.btn.btn-secondary.float-end(data-bs-toggle="modal" data-bs-target="#signupModal") Add Trucker 
-        .row.mt-1
-            .col 
+            .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
+                .row.px-4.mb-4
+                    .col
+                        h5 TRUCKERS
+                    .col
+                        button.btn.btn-secondary.float-end(data-bs-toggle="modal" data-bs-target="#signupModal") Add Trucker 
+                
                 table.table.table-striped 
                     thead 
                         tr 
@@ -26,16 +34,14 @@ block content
                                 td= trucker.email 
                                 td= trucker.phone 
                                 td= trucker.status
-                                td.text-center
-                                    ul.nav(data-user_id=`${trucker.id}`) 
-                                        li.nav-item 
-                                            a.dropdown-item.nav-link(href="#" data-action="blocked" title='Ban this user') 
-                                                i.fa.fa-ban  
-                                                | &nbsp;Ban
-                                        li.nav-item 
-                                            a.dropdown-item.nav-link(href="#" data-action="remove") 
-                                                i.fa.fa-trash  
-                                                | &nbsp;Del
+                                td(data-user_id=`${trucker.id}`).text-center
+                                    a(href="#" data-action="blocked" title='Ban this user').me-2.action-btn
+                                        i.fa.fa-ban  
+                                        | &nbsp;
+                                        
+                                    a(href="#" data-action="delete" title='Delete this trucker').action-btn
+                                        i.fa.fa-trash  
+                                        | &nbsp;
 
 
 block modals
@@ -64,7 +70,7 @@ block modals
 
 block scriptBlock
     script. 
-        const menus = document.getElementsByClassName("dropdown-item");
+        const menus = document.getElementsByClassName("action-btn");
         let action;
         for (let i = 0; i < menus.length; i++) {
             menus[i].addEventListener("click", function() {
@@ -72,13 +78,13 @@ block scriptBlock
                 let message = '';
                 if (action == 'blocked') {
                     message = 'Are you sure you want to ban this trucker from the system? You can undo the action'
-                } else if (action == 'remove') {
+                } else if (action == 'delete    ') {
                     message = 'Are you sure ypu want to remove this trucker?';
                 }
                 if (confirm(message)) {
-                    const user_id = this.closest('ul').dataset.user_id;
+                    const user_id = this.closest('td').dataset.user_id;
                     const data = { action, user_id };
-                    fetch('update-user-status', {
+                    fetch('update-user', {
                         method: 'POST', 
                         headers: {
                             "Content-Type": "application/json"

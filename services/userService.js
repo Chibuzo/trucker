@@ -114,14 +114,8 @@ const updateUser = async (userData, id) => {
 }
 
 
-const uploadProfilePhoto = async (photoFile, userId) => {
-    const allowedFileTypes = ['image/gif', 'image/png', 'image/jpeg'];
-    if (!allowedFileTypes.includes(photoFile.mimetype)) {
-        throw new ErrorHandler(400, 'Unsupported file type');
-    }
-    const key = `profile-photo/${crypto.randomUUID()}${path.extname(photoFile.name)}`;
-    const { Location } = await s3Upload(S3_BUCKET, key, photoFile.data);
-    return User.update({ profilePhoto: Location }, { where: { id: userId } });
+const removeUser = async user_id => {
+    return updateUser({ deleted: true }, user_id);
 }
 
 
@@ -153,6 +147,6 @@ module.exports = {
     updateUser,
     verifyPasswordResetLink,
     changePassword,
-    uploadProfilePhoto,
+    removeUser,
     createAdmin
 }

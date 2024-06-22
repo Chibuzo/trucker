@@ -89,7 +89,7 @@ router.get('/delivery-orders', authenticate, async (req, res, next) => {
         }
         if (status) userCriteria[role].status = status;
         const orders = await deliveryService.list(userCriteria[role]);
-        res.render('delivery-orders', { title: 'Delivery Requests', orders });
+        res.render('delivery-orders', { title: 'Delivery Requests', orders, page: 'orders' });
     } catch (err) {
         next(err);
     }
@@ -99,7 +99,7 @@ router.get('/my-trips', authenticate, async (req, res, next) => {
     try {
         const { id: truckerId } = req.session.user
         const orders = await deliveryService.list({ truckerId });
-        res.render('delivery-orders', { title: 'My Deliveries', orders });
+        res.render('delivery-orders', { title: 'My Deliveries', orders, page: 'trips' });
     } catch (err) {
         next(err);
     }
@@ -150,7 +150,7 @@ router.post('/save-region', authenticateAdmin, async (req, res, next) => {
 router.get('/reports', authenticateAdmin, async (req, res, next) => {
     try {
         const [orders, percentage] = await Promise.all([
-            deliveryService.list(),
+            deliveryService.list({ status: 'complete'}),
             Percentage.findOne({})
         ]);
         const incentive = percentage ? percentage.percentage : 0;
@@ -175,7 +175,7 @@ router.post('/update-user', authenticateAdmin, async (req, res) => {
         if (action == 'delete') {
             await userService.removeUser(user_id);
         } else {
-            await userService.update(user_id, { status: action });
+            await userService.updateUser({ status: action }, user_id);
         }
         res.json({ status: true });
     } catch (err) {
