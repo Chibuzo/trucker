@@ -25,11 +25,11 @@ router.get('/', authenticate, async (req, res, next) => {
     }
 });
 
-router.put('/:id', authenticate, async (req, res, next) => {
+router.post('/update', authenticate, async (req, res, next) => {
     try {
-        const { id } = req.params;
-        await regionService.update(id, req.body);
-        res.json({ status: 'success' });
+        const { id, name } = req.body;
+        await regionService.update(id, { name });
+        res.redirect('/settings');
     } catch (err) {
         logger.error('Updating Region failed', { data: err });
         next(err);

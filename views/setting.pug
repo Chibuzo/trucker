@@ -36,7 +36,7 @@ block content
                                 td.ps-3= warehouse.name 
                                 td= warehouse.DeliveryRegion.name 
                                 td.text-center 
-                                    a(href=`/edit-warehouse/${warehouse.id}` title="Edit Warehouse" style="margin-right: 9px")
+                                    a(href='#' data-bs-target='#editWarehouseModal' data-bs-toggle='modal' onClick=`editWarehouse(${warehouse.id}, '${warehouse.name}', ${warehouse.regionId})` title="Edit Warehouse" style="margin-right: 9px")
                                         i.fa.fa-pencil
 
                                     a.delete(href="#" onClick=`deleteWarehouse(${warehouse.id}, this.parentElement)` title="Delete Warehouse")
@@ -61,11 +61,49 @@ block content
                             tr 
                                 td.ps-3= region.name 
                                 td.text-center 
-                                    a(href=`/edit-reqion/${region.id}` title="Edit Region" style="margin-right: 9px")
+                                    a(href='#' onClick=`editRegion(${region.id}, '${region.name}')` data-bs-target='#editRegionModal' data-bs-toggle='modal' title="Edit Region" style="margin-right: 9px")
                                         i.fa.fa-pencil
 
                                     a.delete-region(href="#" onClick=`deleteRegion(${region.id}, this.parentElement)` title="Delete Region")
                                         i.fa.fa-trash
+
+block modals
+    #editRegionModal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header
+                    h5#staticBackdropLabel.modal-title Edit Region
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                form(method="post" action="/region/update")
+                    .modal-body
+                        .mb-3
+                            input.form-control(type="text" id='region-name' name="name" placeholder="Name of region" aria-label="name" required=true)
+                            input(type='hidden' name='id' id='regionId')
+                    .modal-footer
+                        button.btn.btn-light(type='button' data-bs-dismiss='modal') Close
+                        button.btn.btn-secondary(type='submit') Update Region
+
+
+    #editWarehouseModal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header
+                    h5#staticBackdropLabel.modal-title Edit Warehouse
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                form(method="post" action="/warehouse/update")
+                    .modal-body
+                        .mb-3
+                            input.form-control(type="text" id='warehouse-name' name="name" placeholder="Warehouse Name" aria-label="name" required=true)
+                            input(type='hidden' name='id' id='warehouseId')
+                        .mb-3 
+                            select.form-control.form-control-sm#region-id(name='regionId')
+                                option(value='') -- Region --
+                                    each region in regions 
+                                        option(value=`${region.id}`)= region.name
+                    .modal-footer
+                        button.btn.btn-light(type='button' data-bs-dismiss='modal') Close
+                        button.btn.btn-secondary(type='submit') Update Warehouse
+
 
 block scriptBlock
     script. 
@@ -100,5 +138,17 @@ block scriptBlock
                     alert(res.message);
                 }
             }
+        }
+
+        function editRegion(regionId, regionName) {
+            document.getElementById('region-name').value = regionName;
+            document.getElementById('regionId').value = regionId;
+        }
+
+
+        function editWarehouse(id, warehouseName, regionId) {
+            document.getElementById('warehouse-name').value = warehouseName;
+            document.getElementById('warehouseId').value = id;
+            document.getElementById('region-id').value = regionId;
         }
 
