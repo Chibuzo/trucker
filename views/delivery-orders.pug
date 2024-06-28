@@ -72,6 +72,9 @@ block content
                                         else if (order.status == 'complete') 
                                             span.badge.bg-success
                                                 | #{order.status}
+                                        else if (order.status == 'delivered') 
+                                            span.badge.bg-info
+                                                | #{order.status}
                                         else if (order.status == 'picked up') 
                                             span.badge.bg-secondary
                                                 | #{order.status}
@@ -86,16 +89,23 @@ block content
                                             ul.dropdown-menu(aria-labelledby="dropdownMenu" data-order_id=`${order.id}`) 
                                                 if admin
                                                     li 
+                                                            a.dropdown-item(href="#" data-action="delivered") Delivered
+                                                    li 
+                                                        a.dropdown-item(href="#" data-action="complete") Complete
+                                                    li 
                                                         a.dropdown-item(href="#" data-action="cancelled") Cancel
                                                 else
                                                     if page == 'orders'
                                                         li  
                                                             a.dropdown-item(href="#" data-action="picked up") Pick Up 
+                                                        li 
+                                                            a.dropdown-item.disabled(href="#" data-action="delivered") Delivered
                                                     else if page == 'trips'
+                                                        li  
+                                                            a.dropdown-item.disabled(href="#" data-action="picked up") Pick Up 
                                                         li 
                                                             a.dropdown-item(href="#" data-action="delivered") Delivered
-                                                        li 
-                                                            a.dropdown-item(href="#" data-action="complete") Complete
+                                                        
 
 
                 else if user 
@@ -125,6 +135,9 @@ block content
                                                 | #{order.status}
                                         else if (order.status == 'complete') 
                                             span.badge.bg-success
+                                                | #{order.status}
+                                        else if (order.status == 'delivered') 
+                                            span.badge.bg-info
                                                 | #{order.status}
                                         else if (order.status == 'picked up') 
                                             span.badge.bg-secondary
