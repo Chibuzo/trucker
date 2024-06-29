@@ -47,7 +47,7 @@ block content
                                 td= order.orderSize 
                                     | ft<sup>3</sup>
                                 td.text-end $#{view.formatCurrency(order.cost)}
-                                td= order.percentage 
+                                td.text-center= order.percentage 
                                     | %
                                 td.text-end $#{view.formatCurrency((order.percentage / 100) * order.cost)}
 

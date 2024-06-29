@@ -281,7 +281,7 @@ router.post('/update-incentive', authenticateAdmin, async (req, res, next) => {
         } else {
             await Percentage.create({ percentage });
         }
-        res.redirect('/reports');
+        res.redirect('/settings');
     } catch (err) {
         next(err);
     }
