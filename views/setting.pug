@@ -10,62 +10,78 @@ block styleBlock
 block content 
     .container.px-3
         .row.mt-1.gx-4
-            .col-md-8
+            .col-md-12 
                 .pt-4(style="background: #fff; border-radius: 10px; border: 1px solid #f0f0f0")
-                    h5.ms-2.mb-3 [ WAREHOUSES ]
-                    table.table 
-                        tr 
-                            th Warehouse 
-                            th Region 
-                            th(width='110') Action
-                        tr.bg-light 
-                            form(action='/save-warehouse' method='post')
-                                td 
-                                    input.form-control.form-control-sm(name='name' type='text' required)
-                                td
-                                    select.form-control.form-control-sm(name='regionId')
-                                        option(value='') -- Region --
-                                        each region in regions 
-                                            option(value=`${region.id}`)= region.name
-                                td 
-                                    button.btn.btn-secondary
-                                        i.fa.fa-save 
-                                        | &nbsp;Save
-                        each warehouse in warehouses 
-                            tr 
-                                td.ps-3= warehouse.name 
-                                td= warehouse.DeliveryRegion.name 
-                                td.text-center 
-                                    a(href='#' data-bs-target='#editWarehouseModal' data-bs-toggle='modal' onClick=`editWarehouse(${warehouse.id}, '${warehouse.name}', ${warehouse.regionId})` title="Edit Warehouse" style="margin-right: 9px")
-                                        i.fa.fa-pencil
+                    .p-3.pt-0.mb-3
+                        form(action='/update-incentive' method='post')#filter-orders
+                            .row
+                                .col-md-5.col-sm-8
+                                    label.form-label <strong>Commission</strong>
+                                    .input-group
+                                        input.form-control.form-control-sm(type=number name='percentage' placeholder='Percentage' value=`${percentage}`)
+                                        button.btn.btn-secondary(type='submit')
+                                            i.fa.fa-save  
+                                            | &nbsp;Update
 
-                                    a.delete(href="#" onClick=`deleteWarehouse(${warehouse.id}, this.parentElement)` title="Delete Warehouse")
-                                        i.fa.fa-trash
+                    hr
 
-            .col-md-4
-                .pt-4(style="background: #fff; border-radius: 10px; border: 1px solid #f0f0f0")
-                    h5.ms-2.mb-3 [ REGIONS ]
-                    table.table
-                        tr 
-                            th Region 
-                            th Action 
-                        tr.bg-light 
-                            form(action='/save-region' method='post')
-                                td 
-                                    input.form-control.form-control-sm(name='name' type='text' required)
-                                td 
-                                    button.btn.btn-secondary
-                                        i.fa.fa-save 
-                                        | &nbsp;Save
-                        each region in regions
-                            tr 
-                                td.ps-3= region.name 
-                                td.text-center 
-                                    a(href='#' onClick=`editRegion(${region.id}, '${region.name}')` data-bs-target='#editRegionModal' data-bs-toggle='modal' title="Edit Region" style="margin-right: 9px")
-                                        i.fa.fa-pencil
+                    .row.mt-5
+                        .col-md-8
+                            h5.ms-2.mb-3 [ WAREHOUSES ]
+                            table.table 
+                                tr 
+                                    th Warehouse 
+                                    th Region 
+                                    th(width='110') Action
+                                tr.bg-light 
+                                    form(action='/save-warehouse' method='post')
+                                        td 
+                                            input.form-control.form-control-sm(name='name' type='text' required)
+                                        td
+                                            select.form-control.form-control-sm(name='regionId')
+                                                option(value='') -- Region --
+                                                each region in regions 
+                                                    option(value=`${region.id}`)= region.name
+                                        td 
+                                            button.btn.btn-secondary
+                                                i.fa.fa-save 
+                                                | &nbsp;Save
+                                each warehouse in warehouses 
+                                    tr 
+                                        td.ps-3= warehouse.name 
+                                        td= warehouse.DeliveryRegion.name 
+                                        td.text-center 
+                                            a(href='#' data-bs-target='#editWarehouseModal' data-bs-toggle='modal' onClick=`editWarehouse(${warehouse.id}, '${warehouse.name}', ${warehouse.regionId})` title="Edit Warehouse" style="margin-right: 9px")
+                                                i.fa.fa-pencil
 
-                                    a.delete-region(href="#" onClick=`deleteRegion(${region.id}, this.parentElement)` title="Delete Region")
-                                        i.fa.fa-trash
+                                            a.delete(href="#" onClick=`deleteWarehouse(${warehouse.id}, this.parentElement)` title="Delete Warehouse")
+                                                i.fa.fa-trash
+
+                        .col-md-4
+                            h5.ms-2.mb-3 [ REGIONS ]
+                            table.table
+                                tr 
+                                    th Region 
+                                    th Action 
+                                tr.bg-light 
+                                    form(action='/save-region' method='post')
+                                        td 
+                                            input.form-control.form-control-sm(name='name' type='text' required)
+                                        td 
+                                            button.btn.btn-secondary
+                                                i.fa.fa-save 
+                                                | &nbsp;Save
+                                each region in regions
+                                    tr 
+                                        td.ps-3= region.name 
+                                        td.text-center 
+                                            a(href='#' onClick=`editRegion(${region.id}, '${region.name}')` data-bs-target='#editRegionModal' data-bs-toggle='modal' title="Edit Region" style="margin-right: 9px")
+                                                i.fa.fa-pencil
+
+                                            a.delete-region(href="#" onClick=`deleteRegion(${region.id}, this.parentElement)` title="Delete Region")
+                                                i.fa.fa-trash
+                                
+                                        
 
 block modals
     #editRegionModal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')

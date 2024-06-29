@@ -107,9 +107,8 @@ router.get('/my-trips', authenticate, async (req, res, next) => {
 
 router.post('/update-order', authenticate, async (req, res, next) => {
     try {
-        const { id: truckerId } = req.session.user;
         const { action, order_id } = req.body;
-        const order = await deliveryService.update(order_id, { status: action, truckerId }, truckerId);
+        const order = await deliveryService.update(order_id, { status: action, truckerId });
         res.json({ status: 'success' });
     } catch (err) {
         res.json({ status: 'error', message: err.message });
@@ -118,11 +117,13 @@ router.post('/update-order', authenticate, async (req, res, next) => {
 
 router.get('/settings', authenticateAdmin, async (req, res, next) => {
     try {
-        const [regions, warehouses] = await Promise.all([
+        const [regions, warehouses, percentage] = await Promise.all([
             regionService.list(),
-            warehouseService.list()
+            warehouseService.list(),
+            Percentage.findOne({})
         ]);
-        res.render('setting', { title: 'App Settings', regions, warehouses });
+        const incentive = percentage ? percentage.percentage : 0;
+        res.render('setting', { title: 'App Settings', regions, warehouses, percentage: incentive });
     } catch (err) {
         next(err);
     }
@@ -149,12 +150,8 @@ router.post('/save-region', authenticateAdmin, async (req, res, next) => {
 
 router.get('/reports', authenticateAdmin, async (req, res, next) => {
     try {
-        const [orders, percentage] = await Promise.all([
-            deliveryService.list({ status: 'complete'}),
-            Percentage.findOne({})
-        ]);
-        const incentive = percentage ? percentage.percentage : 0;
-        res.render('earnings', { title: 'Earning Report', orders, percentage: incentive });
+        const orders = await deliveryService.list({ status: 'complete'});
+        res.render('earnings', { title: 'Earning Report', orders });
     } catch (err) {
         next(err);
     }

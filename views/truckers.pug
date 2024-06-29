@@ -35,9 +35,14 @@ block content
                                 td= trucker.phone 
                                 td= trucker.status
                                 td(data-user_id=`${trucker.id}`).text-center
-                                    a(href="#" data-action="blocked" title='Ban this user').me-2.action-btn
-                                        i.fa.fa-ban  
-                                        | &nbsp;
+                                    if trucker.status == 'blocked'
+                                        a(href="#" data-action="active" title='Unban this user').me-2.action-btn
+                                            i.fa.fa-check(style='color: green')  
+                                            | &nbsp;
+                                    else 
+                                        a(href="#" data-action="blocked" title='Ban this user').me-2.action-btn
+                                            i.fa.fa-ban  
+                                            | &nbsp;
                                         
                                     a(href="#" data-action="delete" title='Delete this trucker').action-btn
                                         i.fa.fa-trash  
