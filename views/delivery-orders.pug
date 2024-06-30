@@ -14,23 +14,23 @@ block content
         .row
             .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
                 if admin
-                    .mb-4.ps-4
-                        form(action='/delivery-orders' method='get')#filter-orders
-                            .row
-                                .col-md-3.col-sm-8
-                                    select.form-control(name='status' required)
-                                        option(value='') -- Filter by status --
-                                        option(value='picked up') Picked Up
-                                        option(value='pending') Pending
-                                        option(value='delivered') Delivered 
-                                        option(value='complete') Completed
-                                .col-md-2
-                                    button.btn.btn-secondary(type='submit') 
-                                        i.fa.fa-filter  
-                                        | &nbsp;Filter
+                    //- .mb-4.ps-4
+                    //-     form(action='/delivery-orders' method='get')#filter-orders
+                    //-         .row
+                    //-             .col-md-3.col-sm-8
+                    //-                 select.form-control(name='status' required)
+                    //-                     option(value='') -- Filter by status --
+                    //-                     option(value='picked up') Picked Up
+                    //-                     option(value='pending') Pending
+                    //-                     option(value='delivered') Delivered 
+                    //-                     option(value='complete') Completed
+                    //-             .col-md-2
+                    //-                 button.btn.btn-secondary(type='submit') 
+                    //-                     i.fa.fa-filter  
+                    //-                     | &nbsp;Filter
 
                 if admin || trucker
-                    table.table.table-striped.table-responsive
+                    table.table.table-striped#reports
                         thead 
                             tr 
                                 th Date 
@@ -42,7 +42,7 @@ block content
                                 th Paid
                                 th Status
                                 th Trucker
-                                th
+                                th Menu
                         tbody 
                             each order in orders 
                                 tr 

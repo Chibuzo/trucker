@@ -22,10 +22,10 @@ block content
                                 button.btn.btn-secondary(type='submit') 
                                     i.fa.fa-save  
                                     | &nbsp;Filter
-                table.table.table-striped
+                table.table.table-striped.nowrap#reports
                     thead 
                         tr 
-                            th Date 
+                            th(data-priority="1") Date 
                             th Warehouse 
                             th Store
                             th Order#
@@ -54,3 +54,5 @@ block content
 
 block scriptBlock
     script. 
+
+        

@@ -107,6 +107,7 @@ router.get('/my-trips', authenticate, async (req, res, next) => {
 
 router.post('/update-order', authenticate, async (req, res, next) => {
     try {
+        const { id: truckerId } = req.session.user;
         const { action, order_id } = req.body;
         const order = await deliveryService.update(order_id, { status: action, truckerId });
         res.json({ status: 'success' });
