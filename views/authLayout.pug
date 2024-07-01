@@ -13,16 +13,24 @@ head
     // Favicon
     //- link(rel='shortcut icon' type='image/png' href='/images/logos/favicon.png')
     // Core Css
+    //- link(rel='stylesheet' href='/css/bootstrap.min.css')
     link#themeColors(rel='stylesheet' href='/css/style.min.css')
+    ink(rel='stylesheet' href='/css/truck.css')
     style. 
-        //- body {
-        //-     display: flex;
-        //-     background-color: #f5f5f5;
-        //-     //- width: 100vw;
-        //-     //- height: 100vh;
-        //-     background: url('/images/bg.jpg');
-        //-     background-size: cover;
-        //- }
+        .form-input {
+            display: block;
+            width: 100%;
+            min-height: 60px;
+            padding: 18px 25px;
+            font-weight: 300;
+            line-height: 24px;
+            color: #29293a;
+            background-color: #f2f3f9;
+            background-image: none;
+            border: 0px solid #f2f3f9;
+            border-radius: 35px;
+            -webkit-appearance: none;
+        }
 
         .radial-gradient::before {
             background: url('/images/truck.jpg');
@@ -37,6 +45,7 @@ head
             .row
                 .col-xl-7.col-xxl-7
                     a.text-nowrap.logo-img.d-block.px-4.py-9.w-100(href='/')
+                        img(src='/images/logo.png' alt='' width='143')
                         //- img(src='/images/logo.png' width='180' alt='')
                         //- .d-none.d-xl-flex.align-items-center.justify-content-center(stle='height: calc(100vh - 80px);')
                 .col-xl-5.col-xxl-5

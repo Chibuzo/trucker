@@ -13,7 +13,7 @@ const { Percentage } = require('../models');
 
 router.get('/', async (req, res, next) => {
     try {
-        res.render('login', { title: 'Login' });
+        res.render('index', { title: 'Login' });
     } catch (err) {
         next(err);
     }
@@ -61,6 +61,15 @@ router.get('/request-delivery', authenticate, async (req, res, next) => {
     try {
         const warehouses = await warehouseService.list();
         res.render('delivery-request', { title: 'Request Delivery', warehouses });
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/new-delivery', authenticate, async (req, res, next) => {
+    try {
+        const warehouses = await warehouseService.list();
+        res.render('new-delivery', { title: 'Request Delivery', warehouses });
     } catch (err) {
         next(err);
     }
@@ -194,7 +203,7 @@ router.post('/delete-region', authenticateAdmin, async (req, res) => {
 
 router.get('/logout', (req, res, next) => {
     req.session.destroy();
-    res.redirect('/login');
+    res.redirect('/');
 });
 
 router.get('/activate/:email_hash/:hash_string', async (req, res, next) => {

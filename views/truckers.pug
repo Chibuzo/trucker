@@ -85,6 +85,8 @@ block scriptBlock
                     message = 'Are you sure you want to ban this trucker from the system? You can undo the action'
                 } else if (action == 'delete    ') {
                     message = 'Are you sure ypu want to remove this trucker?';
+                } else if (action = 'active') {
+                    message = 'You are about to unblock this trucker. Continue?'
                 }
                 if (confirm(message)) {
                     const user_id = this.closest('td').dataset.user_id;

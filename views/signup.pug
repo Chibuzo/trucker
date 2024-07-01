@@ -3,29 +3,26 @@ extends authLayout
 block content 
     .col-sm-8.col-md-6.col-xl-9
         .position-relative.text-center.my-4
-            p.mb-0.fs-4.px-3.d-inline-block.bg-white.text-dark.z-index-5.position-relative
+            p.mb-0.fs-6.px-3.d-inline-block.bg-white.text-dark.z-index-5.position-relative
                 | Sign Up
             span.border-top.w-100.position-absolute.top-50.start-50.translate-middle
         .alert.alert-danger.d-none
         form(method="post" action="/register")#form-signup.px-md-0.px-4
             .mb-3
-                label.form-label(for='exampleInputEmail1') Store Name
-                input.form-control(type='text' name="fullname" aria-describedby='emailHelp' placeholder='Name of your Store' Required)
+                //- label.form-label(for='exampleInputEmail1') Store Name
+                input.form-input(type='text' name="fullname" aria-describedby='emailHelp' placeholder='Name of your Store' Required)
             .mb-3
-                label.form-label(for='exampleInputEmail1') Email
-                input.form-control#email(type='email' name="email" aria-describedby='emailHelp' placeholder='Email' Required)
+                input.form-input#email(type='email' name="email" aria-describedby='emailHelp' placeholder='Email' Required)
             .mb-3
-                label.form-label(for='exampleInputPassword1') Password
-                input.form-control#password(type='password' name="password" placeholder='Password' Required)
-            .mb-4
-                label.form-label(for='exampleInputPassword1') Verify Password
-                input.form-control#verify-password(type='password' name="" placeholder='Verify password' Required)
+                input.form-input#password(type='password' name="password" placeholder='Password' Required)
+            .mb-3
+                input.form-input#verify-password(type='password' name="" placeholder='Verify password' Required)
             .d-flex.align-items-center.justify-content-between.mb-4
 
-            button.btn.btn-dark.w-100.py-8.mb-4.rounded-2(type='submit') Sign Up
+            button.btn.btn-dark.btn-lg.w-100.py-8.mb-4.rounded-5(type='submit') Sign Up
             .d-flex.align-items-center.justify-content-center
                 p.fs-4.mb-0.fw-medium Already have an account?
-                a.text-primary.fw-medium.ms-2(href='/login') Sign In
+                a.text-primary.fw-medium.ms-2(href='/') Sign In
 
 
 

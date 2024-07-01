@@ -1,17 +1,250 @@
-extend layout
+doctype html
+head
+  // Site Title
+  title Osman Delivery
+  meta(name='format-detection' content='telephone=no')
+  meta(name='viewport' content='width=device-width, height=device-height, initial-scale=1.0')
+  meta(http-equiv='X-UA-Compatible' content='IE=edge')
+  meta(charset='utf-8')
+  link(rel='icon' href='images/favicon.ico' type='image/x-icon')
+  // Stylesheets
+  link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Oswald:200,400%7CLato:300,400,300italic,700%7CMontserrat:900')
+  link(rel='stylesheet' href='/css/bootstrap.min.css')
+  link(rel='stylesheet' href='/css/truck.css')
+  link(rel='stylesheet' href='/css/mdi.css')
+  link(rel='stylesheet' href='/css/fl-bigmug-line.css')
+  style.  
+    .jumbotron {
+        background:url(/images/landing-trucking-slider-3.jpg);
+        background-size: cover;
+        height: 100vh;
+    }
 
-block styleBlock
-    style.
-        .votes {
-            text-align: right
-        }
+    .button-default-outline:hover {
+        background-color: #666 !important;
+        color: #fff;
+        border: 2px solid #666;
+    }
 
-block content 
-    .section.pt-5.pb-5
-        .container
-            .row.justify-content-center.mb-5
-                .col-lg-7.text-center
-                    h4.heading.mb-5(style='color: #3cb371') 
+  //if lt IE 10
+    div(style='background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;')
+      a(href='https://windows.microsoft.com/en-US/internet-explorer/')
+        img(src='images/ie8-card/warning_bar_0000_us.jpg' border='0' height='42' width='820' alt='You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today.')
+    script(src='js/html5shiv.min.js')
+// Page preloader
+.page-loader
+  .page-loader-body
+    .page-loader__logo
+      img(src='/images/logo.png' alt='' width='143' height='36')
+    .preloader-wrapper.big.active
+      .spinner-layer.spinner-blue
+        .circle-clipper.left
+          .circle
+        .gap-patch
+          .circle
+        .circle-clipper.right
+          .circle
+      .spinner-layer.spinner-red
+        .circle-clipper.left
+          .circle
+        .gap-patch
+          .circle
+        .circle-clipper.right
+          .circle
+      .spinner-layer.spinner-yellow
+        .circle-clipper.left
+          .circle
+        .gap-patch
+          .circle
+        .circle-clipper.right
+          .circle
+      .spinner-layer.spinner-green
+        .circle-clipper.left
+          .circle
+        .gap-patch
+          .circle
+        .circle-clipper.right
+          .circle
+// Page
+.page
+  // Page Header
+  header.section.page-header
+    // RD Navbar
+    .rd-navbar-wrap.rd-navbar-corporate
+      nav.rd-navbar(data-layout='rd-navbar-fixed' data-sm-layout='rd-navbar-fixed' data-md-layout='rd-navbar-fixed' data-lg-layout='rd-navbar-fullwidth' data-xl-layout='rd-navbar-static' data-xxl-layout='rd-navbar-static' data-md-device-layout='rd-navbar-fixed' data-lg-device-layout='rd-navbar-static' data-xxl-stick-up-offset='130px' data-md-stick-up-offset='100px' data-stick-up='true' data-sm-stick-up='true' data-md-stick-up='true' data-lg-stick-up='true')
+        .rd-navbar-collapse-toggle(data-rd-navbar-toggle='.rd-navbar-collapse')
+          span
+        //- .rd-navbar-top-card.rd-navbar-collapse
+        //-   .rd-navbar-top-card-inner
+            //- ul.list-inline
+            //-   li.box-inline
+            //-     span.icon.icon-md-smaller.icon-gray-light.mdi.mdi-phone
+            //-     ul.list-comma
+            //-       li
+            //-         a(href='tel:#') 1-800-1234-567
+            //-       li
+            //-         a(href='tel:+17038633106') 1 (703) 863-3106
+            //-   li.box-inline
+            //-     span.icon.icon-md-smaller.icon-gray-light.mdi.mdi-map-marker
+            //-     a(href='#') 2130 Fulton Street, San Diego, CA 94117-1080 USA
+            //-   li.box-inline
+            //-     span.icon.icon-md-smaller.icon-gray-light.mdi.mdi-email
+            //-     a(href='mailto:#') mail@demolink.org
+            
+          .rd-navbar-top-card-inner
+            a.button.button-sm.button-secondary(href='/register') Sign Up
+        
+        //- .rd-navbar-inner
+        //-   // RD Navbar card
+        //-   .rd-navbar-card
+        //-     // RD Navbar Toggle
+        //-     button.rd-navbar-toggle(data-rd-navbar-toggle='.rd-navbar-nav-wrap')
+        //-       span
+        //-     // RD Navbar Brand
+        //-     .rd-navbar-brand
+        //-       a.brand-name(href='/')
+        //-         img.logo-default(src='/images/logo.png' alt='' width='143' height='36')
+        //-         img.logo-inverse(src='images/logo-inverse-143x36.png' alt='' width='143' height='36')
+        //-   .rd-navbar-aside-center
+        //-     .rd-navbar-nav-wrap
+            
+  // slider
+  section.section
+    .swiper-form-wrap
+      .jumbotron
+        img.logo-default(src='/images/logo.png' alt='' width='143' height='36')
+        .container.container-bigger.swiper-main-section(style='padding-top: 120px')
+            .row.justify-content-sm-center.justify-content-md-start.row-ten
+                .col-md-6.col-lg-4.col-xxl-3.text-white
+                    
+                    h3.text-white.mt-0 OSMAN DISTRIBUTION
+                    p.heading-5.text-white(data-caption-animate='fxBlurInRight' data-caption-delay='350') Reliable and efficient transportation solutions for furniture stores
+                    a.button.button-default-outline(href='/register') Sign Up
 
-            .row.justify-content-center.mb-5
-                .col-lg-7
+        
+      .container.container-bigger.form-request-wrap
+        .row.justify-content-sm-center.justify-content-lg-end.row-ten
+          .col-lg-4.col-xxl-3
+            .form-request
+              h4 Request delivery 
+              p Login to continue
+              // RD Mailform
+              .alert.alert-danger.d-none
+              if message 
+                .alert.alert-success 
+                    | #{message}
+              form.rd-mailform(method='post' action='/login')#form-login
+                .form-wrap.form-wrap-validation
+                  input.form-input(type='email' name='email' placeholder='Email')#email
+
+                .form-wrap.form-wrap-validation
+                  input.form-input(type='password' name='password' placeholder='password')#password
+                .form-wrap.form-button
+                  button.button.button-block.btn-secondary(type='submit') get started
+  
+  // a few words about us
+  section.section.section-lg.bg-gray-lighter
+    .container.container-bigger
+      .row.row-ten.row-50.justify-content-md-center.align-items-lg-center.justify-content-xl-between.flex-xl-row-reverse
+        .col-md-9.col-lg-5.col-xxl-4.text-gray-light
+          h3 About Us
+          .divider.divider-default.bg-secondary
+          p.heading-5
+            | OSMAN DISTRIBUTION
+          p OSMAN DISTRIBUTION specializes in providing reliable and efficient transportation solutions for furniture stores. We ensure seamless pick-up and delivery of your orders, handling each item with the utmost care. Our dedicated team and state-of-the-art fleet guarantee timely and secure services tailored to meet the unique needs of furniture retailers. Trust OSMAN DISTRIBUTION to keep your business moving smoothly.
+
+          a.button.btn-outline-secondary(href='/register') Sign up
+        .col-md-9.col-lg-5
+          img(src='/images/about-truck.jpg' alt='' width='720' height='459')
+  
+//-   section.section.section-wrap.section-reverse.bg-default
+//-     .section-wrap-inner.section-lg
+//-       .container.container-bigger
+//-         .row.row-50
+//-           .col-lg-6.col-xxl-5.text-lg-left
+//-             .section-wrap-content
+//-               h3 contact information
+//-               .divider.divider-default
+//-               p.text-spacing-sm
+//-                 | You can contact us any way that is convenient for you. We are available 24/7 via fax or email. You can visit our office personally.
+//-               ul.list-xs.list-darker
+//-                 li.box-inline
+//-                   span.icon.icon-md-smaller.icon-secondary.mdi.mdi-map-marker
+//-                   div
+//-                     a.text-spacing-sm(href='#') 2130 Fulton Street, San Diego, CA 94117-1080 USA
+//-                 li.box-inline
+//-                   span.icon.icon-md-smaller.icon-secondary.mdi.mdi-phone
+//-                   ul.list-comma
+//-                     li
+//-                       a.text-spacing-sm(href='tel:#') 1-800-1234-567
+//-                     li
+//-                       a.text-spacing-sm(href='tel:#') 1-800-6780-345
+//-                 li.box-inline
+//-                   span.icon.icon-md-smaller.icon-secondary.mdi.mdi-email-open
+//-                   a.text-spacing-sm(href='mailto:#') mail@demolink.org
+//-               ul.list-inline-md
+//-                 li
+//-                   a.icon.icon-sm-bigger.icon-gray-1.mdi.mdi-facebook(href='#')
+//-                 li
+//-                   a.icon.icon-sm-bigger.icon-gray-1.mdi.mdi-twitter(href='#')
+//-                 li
+//-                   a.icon.icon-sm-bigger.icon-gray-1.mdi.mdi-instagram(href='#')
+//-                 li
+//-                   a.icon.icon-sm-bigger.icon-gray-1.mdi.mdi-google(href='#')
+//-                 li
+//-                   a.icon.icon-sm-bigger.icon-gray-1.mdi.mdi-linkedin(href='#')
+//-       .section-wrap-aside.section-wrap-aside-custom
+//-         // Google Map
+//-         .google-map-container.google-map-container__model.google-map-default(data-zoom='15' data-center='6036 Richmond hwy., Alexandria, VA, 2230' data-icon='images/gmap_marker.png' data-icon-active='images/gmap_marker_active.png')
+//-           .google-map
+//-           ul.google-map-markers
+//-             li(data-location='6036 Richmond hwy., Alexandria, VA, 2230' data-description='6036 Richmond hwy., Alexandria, VA, 2230')
+  
+  // Page Footer
+  // Footer Minimal
+footer.section.page-footer.page-footer-minimal.text-center.bg-gray-darker
+    .container.container-wide
+      .row.justify-content-sm-center.align-items-md-center.row-30
+        .col-md-10.col-lg-7.col-xl-4.text-xl-left
+          
+        .col-md-10.col-lg-7.col-xl-4
+          p.right
+            | &copy;&nbsp;
+            span.copyright-year
+            |  All Rights Reserved&nbsp;
+            
+        .col-md-10.col-lg-7.col-xl-4.text-xl-right
+          
+// Global Mailform Output
+// Javascript
+script(src='/libs/jquery/dist/jquery.min.js')
+script(src='/js/script.js')
+script. 
+
+        document.querySelector("#form-login").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const email = document.querySelector("#email").value;
+            const password = document.querySelector("#password").value;
+
+            const res = await fetch("/login", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password })
+            });
+            const d = await res.json();
+
+            if (d.status.trim() == 'success') {
+                const landingPage = {
+                    store: '/delivery-orders',
+                    trucker: '/delivery-orders',
+                    admin: '/delivery-orders'
+                }
+                location.replace(landingPage[d.role]);
+            } else {
+                const alertEle = document.querySelector(".alert-danger");
+                alertEle.innerText = d.message;
+                alertEle.classList.remove('d-none');
+            }
+        });
