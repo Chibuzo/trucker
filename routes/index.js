@@ -39,7 +39,9 @@ router.post('/register', async (req, res, next) => {
 
 router.post('/trucker/create', async (req, res, next) => {
     try {
-        const customer = await userService.create({ ...req.body, role: 'trucker' });
+        const { fname, mname, lname, ...trucker } = req.body;
+        trucker.fullname = `${fname} ${mname} ${lname}`;
+        const customer = await userService.create({ ...trucker, role: 'trucker' });
         res.redirect('/truckers');
     } catch (err) {
         next(err);
@@ -171,6 +173,15 @@ router.get('/truckers', authenticateAdmin, async (req, res, next) => {
     try {
         const truckers = await userService.list({ role: 'trucker' });
         res.render('truckers', { title: 'Manage Truckers', truckers });
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/stores', authenticateAdmin, async (req, res, next) => {
+    try {
+        const stores = await userService.list({ role: 'store' });
+        res.render('stores', { title: 'Manage Stores', stores });
     } catch (err) {
         next(err);
     }

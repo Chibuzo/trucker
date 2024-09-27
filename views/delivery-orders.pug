@@ -60,7 +60,11 @@ block content
                                     td= order.orderNo 
                                     td= order.orderSize 
                                         | ft<sup>3</sup>
-                                    td.text-end $#{view.formatCurrency(order.cost)}
+                                    td.text-end 
+                                        if admin 
+                                            | $#{view.formatCurrency(order.cost)}
+                                        else 
+                                            p -
                                     if order.status == 'complete'
                                         td Yes
                                     else 

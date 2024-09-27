@@ -1,0 +1,81 @@
+extend layout   
+
+block styleBlock 
+    style. 
+        .fa { color: #E52B50 }
+
+        td a { text-decoration: none }
+
+
+block content 
+    .container 
+        .row.mb-4 
+            .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
+                .row.px-4.mb-4
+                    .col
+                        h5 STORES
+                    .col
+                
+                table.table.table-striped 
+                    thead 
+                        tr 
+                            th Date Added 
+                            th Store 
+                            th Email 
+                            th Phone 
+                            th Status
+                            th.text-center(width='180') Action
+                    tbody 
+                        each store in stores 
+                            tr 
+                                td= view.formatDate(store.createdAt)
+                                td= store.fullname 
+                                td= store.email 
+                                td= store.phone 
+                                td= store.status
+                                td(data-user_id=`${store.id}`).text-center
+                                    if store.status == 'blocked'
+                                        a(href="#" data-action="active" title='Unban this store').me-2.action-btn
+                                            i.fa.fa-check(style='color: green')  
+                                            | &nbsp;
+                                    else 
+                                        a(href="#" data-action="blocked" title='Ban this store').me-2.action-btn
+                                            i.fa.fa-ban  
+                                            | &nbsp;
+                                        
+                                    a(href="#" data-action="delete" title='Delete this store').action-btn
+                                        i.fa.fa-trash  
+                                        | &nbsp;
+
+
+
+block scriptBlock
+    script. 
+        const menus = document.getElementsByClassName("action-btn");
+        let action;
+        for (let i = 0; i < menus.length; i++) {
+            menus[i].addEventListener("click", function() {
+                action = this.dataset.action;
+                let message = '';
+                if (action == 'blocked') {
+                    message = 'Are you sure you want to ban this store from the system? You can undo the action'
+                } else if (action == 'delete    ') {
+                    message = 'Are you sure ypu want to remove this store?';
+                } else if (action = 'active') {
+                    message = 'You are about to unblock this store. Continue?'
+                }
+                if (confirm(message)) {
+                    const user_id = this.closest('td').dataset.user_id;
+                    const data = { action, user_id };
+                    fetch('update-user', {
+                        method: 'POST', 
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data) 
+                    }).then(d => {
+                        location.reload()
+                    });
+                }
+            });
+        }   
