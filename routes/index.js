@@ -251,10 +251,13 @@ router.get('/reset-password', async (req, res, next) => {
 router.post('/send-reset-email', async (req, res, next) => {
     try {
         const { email } = req.body;
-        const user = await userService.view(email);
-        let message = 'A password reset link has been sent to your email';
-        emailService.sendPasswordResetLink(email);
-        if (!user) message = 'There is no account associated with this email';
+        const user = await userService.findOne({ email });
+        let message;
+        if (user) {
+            message = 'A password reset link has been sent to your email';
+            emailService.sendPasswordResetLink(user);
+        } else
+            message = 'There is no account associated with this email';
         res.render('reset-password', { title: 'Reset Password', message });
     } catch (err) {
         next(err);

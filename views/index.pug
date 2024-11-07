@@ -137,8 +137,12 @@ head
                 .form-wrap.form-wrap-validation
                   input.form-input(type='email' name='email' placeholder='Email')#email
 
-                .form-wrap.form-wrap-validation
+                .form-wrap.form-wrap-validation.mb-2
                   input.form-input(type='password' name='password' placeholder='password')#password
+                .d-flex.mb-2 
+                  p.mb-0 Forgot your password?  
+                  a.text-primary.fw-medium.ms-2(href='/reset-password') Reset Password
+
                 .form-wrap.form-button
                   button.button.button-block.btn-secondary(type='submit') get started
   
