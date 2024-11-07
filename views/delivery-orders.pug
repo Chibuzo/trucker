@@ -12,7 +12,7 @@ block styleBlock
 block content 
     .container 
         .row
-            .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
+            .col-md-12.dtTable(style="background: #fff; border-radius: 10px").pt-4.px-0
                 if admin
                     //- .mb-4.ps-4
                     //-     form(action='/delivery-orders' method='get')#filter-orders
@@ -93,7 +93,7 @@ block content
                                             ul.dropdown-menu(aria-labelledby="dropdownMenu" data-order_id=`${order.id}`) 
                                                 if admin
                                                     li 
-                                                            a.dropdown-item(href="#" data-action="delivered") Delivered
+                                                        a.dropdown-item(href="#" data-action="delivered") Delivered
                                                     li 
                                                         a.dropdown-item(href="#" data-action="complete") Complete
                                                     li 
@@ -101,7 +101,7 @@ block content
                                                 else
                                                     if page == 'orders'
                                                         li  
-                                                            a.dropdown-item(href="#" data-action="picked up") Pick Up 
+                                                            a.dropdown-item(data-bs-toggle='' data-bs-target='#invoiceModal' data-action="picked up") Pick Up 
                                                         li 
                                                             a.dropdown-item.disabled(href="#" data-action="delivered") Delivered
                                                     else if page == 'trips'
@@ -118,51 +118,65 @@ block content
                             h5 Delivery Requests
                         .col
                             a.btn.btn-secondary.float-end(href='/new-delivery') New Delivery 
-                    table.table.table-striped
-                        thead 
-                            tr 
-                                th Date 
-                                th Warehouse 
-                                th Order# 
-                                th Size (ft<sup>3</sup>)
-                                th Cost ($)
-                                th Status
-                        tbody 
-                            each order in orders 
-                                tr 
-                                    td= view.formatDate(order.createdAt)
-                                    td #{order.Warehouse.name} 
-                                        div 
-                                            small.text-muted [ #{order.Warehouse.DeliveryRegion.name} ]
-                                    td= order.orderNo 
-                                    td= order.orderSize 
-                                        | ft<sup>3</sup>
-                                    td.text-end $#{view.formatCurrency(order.cost)}
-                                    td
-                                        if (order.status == 'pending') 
-                                            span.badge.bg-warning
-                                                | #{order.status}
-                                        else if (order.status == 'complete') 
-                                            span.badge.bg-success
-                                                | #{order.status}
-                                        else if (order.status == 'delivered') 
-                                            span.badge.bg-info
-                                                | #{order.status}
-                                        else if (order.status == 'picked up') 
-                                            span.badge.bg-secondary
-                                                | #{order.status}
-                                        else if (order.status == 'cancelled') 
-                                            span.badge.bg-danger
-                                                | #{order.status}
+                            table.table.table-striped
+                                thead 
+                                    tr 
+                                        th Date 
+                                        th Warehouse 
+                                        th Order# 
+                                        th Size (ft<sup>3</sup>)
+                                        th Cost ($)
+                                        th Status
+                                tbody 
+                                    each order in orders 
+                                        tr 
+                                            td= view.formatDate(order.createdAt)
+                                            td #{order.Warehouse.name} 
+                                                div 
+                                                    small.text-muted [ #{order.Warehouse.DeliveryRegion.name} ]
+                                            td= order.orderNo 
+                                            td= order.orderSize 
+                                                | ft<sup>3</sup>
+                                            td.text-end $#{view.formatCurrency(order.cost)}
+                                            td
+                                                if (order.status == 'pending') 
+                                                    span.badge.bg-warning
+                                                        | #{order.status}
+                                                else if (order.status == 'complete') 
+                                                    span.badge.bg-success
+                                                        | #{order.status}
+                                                else if (order.status == 'delivered') 
+                                                    span.badge.bg-info
+                                                        | #{order.status}
+                                                else if (order.status == 'picked up') 
+                                                    span.badge.bg-secondary
+                                                        | #{order.status}
+                                                else if (order.status == 'cancelled') 
+                                                    span.badge.bg-danger
+                                                        | #{order.status}
+
+block modals
+    #invoiceModal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-lg
+            .modal-content
+                .modal-header
+                    h5#staticBackdropLabel.modal-title Upload Invoice
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                form(method="post" action="/upload-invoice")
+                    .modal-body
+                        .mb-3.row 
+                            .col-md-4
+                                input.form-control(type="file" name="invoice" placeholder="First name" aria-label="First name" required=true)
+                    .modal-footer
+                        button.btn.btn-secondary(type='submit') Upload Invoice
 
 
 block scriptBlock
     script. 
-        const menus = document.getElementsByClassName("dropdown-item");
-        let action;
-        for (let i = 0; i < menus.length; i++) {
-            menus[i].addEventListener("click", function() {
-                action = this.dataset.action;
+
+        $(document).ready(function() {
+            $('.dtTable').on('click', '.dropdown-item', function() {
+                action = $(this).data('action');
                 let message = 'Are you sure you want to continue with this operation?';
                 if (action == 'complete') {
                     message = 'Marking this delivery as "Completed" means it\'s delivered and paid for. Continue?'
@@ -189,5 +203,5 @@ block scriptBlock
                         }
                     });
                 }
-            });
-        }   
+            })
+        })
