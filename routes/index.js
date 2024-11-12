@@ -77,6 +77,18 @@ router.get('/new-delivery', authenticate, async (req, res, next) => {
     }
 });
 
+router.get('/edit-delivery/:id', authenticate, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const [order, warehouses] = await Promise.all([
+            deliveryService.view({ id }),
+            warehouseService.list()
+        ]);
+        res.render('edit-order', { title: 'Update Request Delivery', order, warehouses });
+    } catch (err) {
+        next(err);
+    }
+});
 
 router.post('/request-delivery', authenticate, async (req, res, next) => {
     try {
@@ -122,6 +134,16 @@ router.post('/update-order', authenticate, async (req, res, next) => {
         const { action, order_id } = req.body;
         const order = await deliveryService.update(order_id, { status: action, truckerId });
         res.json({ status: 'success' });
+    } catch (err) {
+        res.json({ status: 'error', message: err.message });
+    }
+});
+
+router.post('/update-delivery', authenticate, async (req, res, next) => {
+    try {
+        const { order_id, ...orderData } = req.body;
+        const order = await deliveryService.update(order_id, orderData);
+        res.redirect('/delivery-orders');
     } catch (err) {
         res.json({ status: 'error', message: err.message });
     }
