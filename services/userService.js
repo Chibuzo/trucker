@@ -56,6 +56,7 @@ const findOne = async criteria => {
 }
 
 const view = async criteria => {
+    console.log(criteria)
     const user = await findOne(criteria);
     if (!user) throw new ErrorHandler(404, 'User not found');
     return sanitize(user);

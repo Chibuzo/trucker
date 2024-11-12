@@ -35,7 +35,7 @@ const SENT_FROM = process.env.AWS_SES_USER;
 const sendMail = (to, subject, template, data) => {
     data.appName = APP_NAME;
     data.baseUrl = BASE_URL;
-    
+
     let mailOptions = {
         from: APP_NAME + ' <' + SENT_FROM + '>',
         to: to,
@@ -91,6 +91,21 @@ module.exports = {
             status
         };
         const template = 'notifyTrucker';
+        sendMail(email, subject, template, data);
+    },
+
+    notifyStore: function (store, subject, status) {
+        const { fullname, email } = store;
+        const message = {
+            'picked up': 'Your delivery request has been picked up. Your order is on the way!',
+            'delivered': 'Your order has been delivered!'
+        }
+        const data = {
+            user: fullname.split(' ')[0],
+            url: BASE_URL,
+            message: message[status] || 'Your order status has changed.'
+        };
+        const template = 'notifyStore';
         sendMail(email, subject, template, data);
     },
 

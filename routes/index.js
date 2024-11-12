@@ -135,6 +135,11 @@ router.post('/update-order', authenticate, async (req, res, next) => {
         const criteria = { status: action };
         if (role == 'trucker') criteria.truckerId = id;
         await deliveryService.update(order_id, criteria);
+        if (role == 'trucker' || role == 'admin') {
+            const order = await deliveryService.view({ id: order_id });
+            const store = await userService.view({ id: order.storeId });
+            emailService.notifyStore(store, 'Your order status has changed', action);
+        }
         res.json({ status: 'success' });
     } catch (err) {
         res.json({ status: 'error', message: err.message });
