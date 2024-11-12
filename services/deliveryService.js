@@ -1,6 +1,7 @@
 const { Delivery, User, Warehouse, DeliveryRegion, Percentage } = require('../models');
-const { ErrorHandler, handleError } = require('../helpers/errorHandler');
+const { ErrorHandler } = require('../helpers/errorHandler');
 const warehouseService = require('./warehouseService');
+const { Op } = require('sequelize');
 
 
 const create = async (deliveryData) => {
@@ -29,7 +30,7 @@ const view = async criteria => {
 
 const list = async criteria => {
     return Delivery.findAll({
-        where: { ...criteria },
+        where: { ...criteria, [Op.not]: { status: 'cancelled' } },
         include: [
             {
                 model: User,

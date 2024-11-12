@@ -160,7 +160,7 @@ block content
                                             a(href=`/edit-delivery/${order.id}` title='Edit').me-2
                                                 i.fa.fa-pencil(style='color: grey')  
                                     
-                                            a(href="#" onClick=`cancelOrder(${order.id})` title='Cancel Request').me-2.disabled
+                                            a(href="#" onClick=`return cancelOrder(${order.id})` title='Cancel Request').me-2.disabled
                                                 i.fa.fa-times(style='color: #cc0000')
                                         
 
@@ -183,6 +183,27 @@ block modals
 block scriptBlock
     script. 
 
+        function cancelOrder(order_id) {
+            if (confirm('Are you sure you want to cancel this delivery request?')) {
+                fetch('update-order', {
+                    method: 'POST', 
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ action: 'cancelled', order_id }) 
+                }).then(d => d.json())
+                .then(d => {
+                    if (d.status.trim() == 'success') {
+                        location.reload()
+                    } else {
+                        alert(d.message)
+                    }
+                });
+                return false;
+            }
+        }
+
+
         $(document).ready(function() {
             $('.dtTable').on('click', '.dropdown-item', function() {
                 action = $(this).data('action');
@@ -197,7 +218,7 @@ block scriptBlock
                 if (confirm(message)) {
                     const order_id = this.closest('ul').dataset.order_id;
                     const data = { action, order_id };
-                    fetch('update-order', {
+                    fetch('/update-order', {
                         method: 'POST', 
                         headers: {
                             "Content-Type": "application/json"
@@ -212,5 +233,5 @@ block scriptBlock
                         }
                     });
                 }
-            })
-        })
+            });
+        });

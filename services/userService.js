@@ -3,7 +3,6 @@ const emailService = require('../services/emailService');
 const bcrypt = require('bcryptjs');
 const { Buffer } = require('buffer');
 const crypto = require('crypto');
-const path = require('path');
 const saltRounds = 10;
 const { ErrorHandler } = require('../helpers/errorHandler');
 
