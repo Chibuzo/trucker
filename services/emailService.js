@@ -34,6 +34,8 @@ const SENT_FROM = process.env.AWS_SES_USER;
 
 const sendMail = (to, subject, template, data) => {
     data.appName = APP_NAME;
+    data.baseUrl = BASE_URL;
+    
     let mailOptions = {
         from: APP_NAME + ' <' + SENT_FROM + '>',
         to: to,
@@ -81,21 +83,18 @@ module.exports = {
         sendMail(user.email, subject, template, data);
     },
 
-    sendPaymentConfirmationEmail: function (user, investment) {
+    notifyTrucker: function (trucker, subject, status) {
+        const { fullname, email } = trucker;
         const data = {
-            user: user.fullname,
-            investment_name: investment.Investment.InvestmentCategory.category_name,
-            units: investment.units,
-            currency: investment.currency.symbol,
-            amount: formatCurrency(investment.amount_invested),
-            url: BASE_URL + 'users/dashboard'
+            user: fullname.split(' ')[0],
+            url: BASE_URL,
+            status
         };
-        const subject = `Congratulations! You just invested in our ${data.investment_name}`;
-        const template = 'paymentConfirmation';
-        sendMail(user.email, subject, template, data);
+        const template = 'notifyTrucker';
+        sendMail(email, subject, template, data);
     },
 
-    emailIVExpress: function ({ sender_email, sender_name, sender_phone = '', subject = 'From FAQ', message }) {
+    emailOsmonTrucks: function ({ sender_email, sender_name, sender_phone = '', subject = 'From FAQ', message }) {
         const template = 'IfemadEmail';
         const data = {
             sender_name,
@@ -118,7 +117,7 @@ module.exports = {
             if (error) {
                 return console.log(error);
             }
-            //console.log('Message sent: %s', info.messageId);
+            console.log('Message sent: %s', info.messageId);
         });
     },
 }
