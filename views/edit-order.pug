@@ -49,7 +49,8 @@ block content
                             .d-flex.align-items-center.justify-content-between.mb-4
                             input(type='hidden' name='order_id' value=`${order.id}`)
 
-                            button.btn.btn-dark.btn-lg.w-100.py-8.mb-4.rounded-5#preview(type='button' data-bs-toggle='modal' data-bs-target='#previewModal' style='border-radius: 50px') Send Request
+                            button.btn.btn-dark.btn-lg.w-100.py-8.mb-4.rounded-5#preview(type='button' data-bs-toggle='modal' data-bs-target='#previewModal' style='border-radius: 50px') Update Request
+                            a.btn.btn-light.btn-lg.w-100.py-8.mb-4.rounded-5#preview(href='/delivery-orders' style='border-radius: 50px') Cancel
 
 block modals
     #previewModal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')

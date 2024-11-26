@@ -67,10 +67,6 @@ const update = async (id, deliveryData) => {
     const order = await Delivery.findOne({ where: { id } });
     if (!order) throw new ErrorHandler(400, 'Invalid delivery');
 
-    if (deliveryData.orderNo && deliveryData.orderNo == order.orderNo) {
-        throw new ErrorHandler(400, 'A delivery order already exist with same order number');
-    }
-
     // if (order.truckerId && order.truckerId != truckerId) {
     //     throw new ErrorHandler(400, 'You are not allowed to change the status of the delivery.');
     // }
