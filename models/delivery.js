@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         cost: {
             type: DataTypes.INTEGER,
-            allowNull: true
+            defaultValue: 0
         },
         deliveryRegionId: DataTypes.INTEGER,
         paid: {
