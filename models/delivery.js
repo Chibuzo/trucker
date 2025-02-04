@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         cost: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: true
         },
         deliveryRegionId: DataTypes.INTEGER,
         paid: {
