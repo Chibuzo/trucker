@@ -19,10 +19,10 @@ block content
                         option(value=`${warehouse.id}`)= warehouse.name
             .mb-3
                 label.form-label(for='') Cost
-                input.form-control#orderCost(type='text' name="cost" aria-describedby='Cost' Required)
+                input.form-control#orderCost(type='text' name="cost" aria-describedby='Cost')
             .mb-4
                 label.form-label(for='') Furniture Size (in clubic ft)
-                input.form-control#orderSize(type='text' name="orderSize" Required)
+                input.form-control#orderSize(type='text' name="orderSize")
             .d-flex.align-items-center.justify-content-between.mb-4
 
             button.btn.btn-dark.w-100.py-8.mb-4.rounded-2#preview(type='button' data-bs-toggle='modal' data-bs-target='#previewModal') Send Request
