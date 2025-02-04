@@ -7,7 +7,8 @@ const userService = require('./userService');
 
 
 const create = async (delivery) => {
-    const { cost = 0, ...deliveryData } = delivery;
+    let { cost, ...deliveryData } = delivery;
+    cost = cost || 0;
     const order = await findOne({ orderNo: deliveryData.orderNo });
     if (order) {
         throw new ErrorHandler(400, 'A delivery order already exist with same order number');

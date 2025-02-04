@@ -36,9 +36,9 @@ block content
                                     each warehouse in warehouses 
                                         option(value=`${warehouse.id}`)= warehouse.name
                             .mb-3
-                                input.form-input#orderCost(type='text' name="cost" placeholder='Cost' aria-describedby='Cost' Required)
+                                input.form-input#orderCost(type='text' name="cost" placeholder='Cost' aria-describedby='Cost')
                             .mb-3
-                                input.form-input#orderSize(type='text' name="orderSize" placeholder='Furniture Size (in clubic ft)' Required)
+                                input.form-input#orderSize(type='text' name="orderSize" placeholder='Furniture Size (in clubic ft)')
                             .d-flex.align-items-center.justify-content-between.mb-4
 
                             button.btn.btn-dark.btn-lg.w-100.py-8.mb-4.rounded-5#preview(type='button' data-bs-toggle='modal' data-bs-target='#previewModal' style='border-radius: 50px') Send Request
