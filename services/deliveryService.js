@@ -6,7 +6,8 @@ const emailService = require('./emailService');
 const userService = require('./userService');
 
 
-const create = async (deliveryData) => {
+const create = async (delivery) => {
+    const { cost = 0, ...deliveryData } = delivery;
     const order = await findOne({ orderNo: deliveryData.orderNo });
     if (order) {
         throw new ErrorHandler(400, 'A delivery order already exist with same order number');
@@ -16,13 +17,13 @@ const create = async (deliveryData) => {
         Percentage.findOne({})
     ]);
     const [newOrder, truckers] = await Promise.all([
-        Delivery.create({ ...deliveryData, deliveryRegionId, percentage }),
+        Delivery.create({ ...deliveryData, cost, deliveryRegionId, percentage }),
         userService.list({ role: 'trucker', status: 'active' })
     ]);
 
-    truckers.forEach(trucker => {
-        emailService.notifyTrucker(trucker, 'New Delivery Request');
-    });
+    // truckers.forEach(trucker => {
+    //     emailService.notifyTrucker(trucker, 'New Delivery Request');
+    // });
     return newOrder;
 }
 
