@@ -1,14 +1,22 @@
-extend layout
+extend layout   
+
+block styleBlock 
+    style. 
+        .fa { color: #E52B50 }
+
+        td a { text-decoration: none }
+
 
 block content 
     .container 
         .row.mb-4 
-            .col 
-                h5 TRUCKERS
-            .col
-                button.btn.btn-secondary.float-end(data-bs-toggle="modal" data-bs-target="#signupModal") Add Trucker 
-        .row.mt-1
-            .col 
+            .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
+                .row.px-4.mb-4
+                    .col
+                        h5 TRUCKERS
+                    .col
+                        button.btn.btn-secondary.float-end(data-bs-toggle="modal" data-bs-target="#signupModal") Add Trucker 
+                
                 table.table.table-striped 
                     thead 
                         tr 
@@ -16,6 +24,7 @@ block content
                             th Name 
                             th Email 
                             th Phone 
+                            th Status
                             th.text-center(width='180') Action
                     tbody 
                         each trucker in truckers 
@@ -24,29 +33,38 @@ block content
                                 td= trucker.fullname 
                                 td= trucker.email 
                                 td= trucker.phone 
-                                td.text-center
-                                    ul.nav(data-user_id=`${trucker.id}`) 
-                                        li.nav-item 
-                                            a.dropdown-item.nav-link(href="#" data-action="ban" title='Ban this user') 
-                                                i.fa.fa-ban  
-                                                | &nbsp;Ban
-                                        li.nav-item 
-                                            a.dropdown-item.nav-link(href="#" data-action="remove") 
-                                                i.fa.fa-trash  
-                                                | &nbsp;Del
+                                td= trucker.status
+                                td(data-user_id=`${trucker.id}`).text-center
+                                    if trucker.status == 'blocked'
+                                        a(href="#" data-action="active" title='Unban this user').me-2.action-btn
+                                            i.fa.fa-check(style='color: green')  
+                                            | &nbsp;
+                                    else 
+                                        a(href="#" data-action="blocked" title='Ban this user').me-2.action-btn
+                                            i.fa.fa-ban  
+                                            | &nbsp;
+                                        
+                                    a(href="#" data-action="delete" title='Delete this trucker').action-btn
+                                        i.fa.fa-trash  
+                                        | &nbsp;
 
 
 block modals
-    #signupModal.modal.fade.modal-lg(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
-        .modal-dialog.modal-dialog-centered
+    #signupModal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-lg
             .modal-content
                 .modal-header
                     h5#staticBackdropLabel.modal-title Add Trucker
                     button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
                 form(method="post" action="/trucker/create")
                     .modal-body
-                        .mb-3
-                            input.form-control(type="text" name="fullname" placeholder="Full name" aria-label="Full name" required=true)
+                        .mb-3.row 
+                            .col-md-4
+                                input.form-control(type="text" name="fname" placeholder="First name" aria-label="First name" required=true)
+                            .col-md-4
+                                input.form-control(type="text" name="mname" placeholder="Middle name" aria-label="Middle name")
+                            .col-md-4
+                                input.form-control(type="text" name="lname" placeholder="Last name" aria-label="First name" required=true)
                         .mb-3.row 
                             .col
                                 input.form-control(type="email" name="email" placeholder="Email" aria-label="Email" required=true)
@@ -62,21 +80,23 @@ block modals
 
 block scriptBlock
     script. 
-        const menus = document.getElementsByClassName("dropdown-item");
+        const menus = document.getElementsByClassName("action-btn");
         let action;
         for (let i = 0; i < menus.length; i++) {
             menus[i].addEventListener("click", function() {
                 action = this.dataset.action;
                 let message = '';
-                if (action == 'ban') {
+                if (action == 'blocked') {
                     message = 'Are you sure you want to ban this trucker from the system? You can undo the action'
-                } else if (action == 'remove') {
+                } else if (action == 'delete    ') {
                     message = 'Are you sure ypu want to remove this trucker?';
+                } else if (action = 'active') {
+                    message = 'You are about to unblock this trucker. Continue?'
                 }
                 if (confirm(message)) {
-                    const user_id = this.closest('ul').dataset.user_id;
+                    const user_id = this.closest('td').dataset.user_id;
                     const data = { action, user_id };
-                    fetch('update-user-status', {
+                    fetch('update-user', {
                         method: 'POST', 
                         headers: {
                             "Content-Type": "application/json"

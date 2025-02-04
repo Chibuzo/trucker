@@ -25,25 +25,25 @@ router.get('/', authenticate, async (req, res, next) => {
     }
 });
 
-router.put('/:id', authenticate, async (req, res, next) => {
+router.post('/update', authenticate, async (req, res, next) => {
     try {
-        const { id } = req.params;
-        await regionService.update(id, req.body);
-        res.redirectt('/admin/regions');
+        const { id, name } = req.body;
+        await regionService.update(id, { name });
+        res.redirect('/settings');
     } catch (err) {
         logger.error('Updating Region failed', { data: err });
         next(err);
     }
 });
 
-router.delete('/:id', authenticate, async (req, res, next) => {
+router.delete('/:id', authenticate, async (req, res) => {
     try {
         const { id } = req.params;
+        console.log({id})
         await regionService.deleteOne(id);
-        res.redirectt('/admin/regions');
+        res.json({ status: 'success' });
     } catch (err) {
-        logger.error('Deleting Region failed', { data: err });
-        next(err);
+        res.json({ status: 'error', message: err.message });
     }
 });
 

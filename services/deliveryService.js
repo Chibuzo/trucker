@@ -1,6 +1,9 @@
 const { Delivery, User, Warehouse, DeliveryRegion, Percentage } = require('../models');
-const { ErrorHandler, handleError } = require('../helpers/errorHandler');
+const { ErrorHandler } = require('../helpers/errorHandler');
 const warehouseService = require('./warehouseService');
+const { Op } = require('sequelize');
+const emailService = require('./emailService');
+const userService = require('./userService');
 
 
 const create = async (deliveryData) => {
@@ -12,7 +15,15 @@ const create = async (deliveryData) => {
         warehouseService.view({ id: deliveryData.warehouseId }),
         Percentage.findOne({})
     ]);
-    return Delivery.create({ ...deliveryData, deliveryRegionId, percentage });
+    const [newOrder, truckers] = await Promise.all([
+        Delivery.create({ ...deliveryData, deliveryRegionId, percentage }),
+        userService.list({ role: 'trucker', status: 'active' })
+    ]);
+
+    truckers.forEach(trucker => {
+        emailService.notifyTrucker(trucker, 'New Delivery Request');
+    });
+    return newOrder;
 }
 
 const findOne = async (criteria) => {
@@ -29,7 +40,7 @@ const view = async criteria => {
 
 const list = async criteria => {
     return Delivery.findAll({
-        where: { ...criteria },
+        where: { ...criteria, [Op.not]: { status: 'cancelled' } },
         include: [
             {
                 model: User,
@@ -52,13 +63,13 @@ const list = async criteria => {
     });
 }
 
-const update = async (id, deliveryData, truckerId) => {
+const update = async (id, deliveryData) => {
     const order = await Delivery.findOne({ where: { id } });
     if (!order) throw new ErrorHandler(400, 'Invalid delivery');
 
-    if (order.truckerId && order.truckerId != truckerId) {
-        throw new ErrorHandler(400, 'You are not allowed to change the status of the delivery.');
-    }
+    // if (order.truckerId && order.truckerId != truckerId) {
+    //     throw new ErrorHandler(400, 'You are not allowed to change the status of the delivery.');
+    // }
     return Delivery.update(deliveryData, { where: { id } });
 }
 

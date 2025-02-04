@@ -13,7 +13,7 @@ const { Percentage } = require('../models');
 
 router.get('/', async (req, res, next) => {
     try {
-        res.render('login', { title: 'Login' });
+        res.render('index', { title: 'Login' });
     } catch (err) {
         next(err);
     }
@@ -39,7 +39,9 @@ router.post('/register', async (req, res, next) => {
 
 router.post('/trucker/create', async (req, res, next) => {
     try {
-        const customer = await userService.create({ ...req.body, role: 'trucker' });
+        const { fname, mname, lname, ...trucker } = req.body;
+        trucker.fullname = `${fname} ${mname} ${lname}`;
+        const customer = await userService.create({ ...trucker, role: 'trucker' });
         res.redirect('/truckers');
     } catch (err) {
         next(err);
@@ -66,6 +68,27 @@ router.get('/request-delivery', authenticate, async (req, res, next) => {
     }
 });
 
+router.get('/new-delivery', authenticate, async (req, res, next) => {
+    try {
+        const warehouses = await warehouseService.list();
+        res.render('new-delivery', { title: 'Request Delivery', warehouses });
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/edit-delivery/:id', authenticate, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const [order, warehouses] = await Promise.all([
+            deliveryService.view({ id }),
+            warehouseService.list()
+        ]);
+        res.render('edit-order', { title: 'Update Request Delivery', order, warehouses });
+    } catch (err) {
+        next(err);
+    }
+});
 
 router.post('/request-delivery', authenticate, async (req, res, next) => {
     try {
@@ -89,7 +112,7 @@ router.get('/delivery-orders', authenticate, async (req, res, next) => {
         }
         if (status) userCriteria[role].status = status;
         const orders = await deliveryService.list(userCriteria[role]);
-        res.render('delivery-orders', { title: 'Delivery Requests', orders });
+        res.render('delivery-orders', { title: 'Delivery Requests', orders, page: 'orders' });
     } catch (err) {
         next(err);
     }
@@ -99,7 +122,7 @@ router.get('/my-trips', authenticate, async (req, res, next) => {
     try {
         const { id: truckerId } = req.session.user
         const orders = await deliveryService.list({ truckerId });
-        res.render('delivery-orders', { title: 'My Deliveries', orders });
+        res.render('delivery-orders', { title: 'My Deliveries', orders, page: 'trips' });
     } catch (err) {
         next(err);
     }
@@ -107,10 +130,27 @@ router.get('/my-trips', authenticate, async (req, res, next) => {
 
 router.post('/update-order', authenticate, async (req, res, next) => {
     try {
-        const { id: truckerId } = req.session.user;
-        const { action, order_id } = req.body;
-        const order = await deliveryService.update(order_id, { status: action, truckerId }, truckerId);
+        const { id, role } = req.session.user;
+        const { action, order_id } = req.body; 
+        const criteria = { status: action };
+        if (role == 'trucker') criteria.truckerId = id;
+        await deliveryService.update(order_id, criteria);
+        if (role == 'trucker' || role == 'admin') {
+            const order = await deliveryService.view({ id: order_id });
+            const store = await userService.view({ id: order.storeId });
+            emailService.notifyStore(store, 'Your order status has changed', action);
+        }
         res.json({ status: 'success' });
+    } catch (err) {
+        res.json({ status: 'error', message: err.message });
+    }
+});
+
+router.post('/update-delivery', authenticate, async (req, res, next) => {
+    try {
+        const { order_id, ...orderData } = req.body;
+        const order = await deliveryService.update(order_id, orderData);
+        res.redirect('/delivery-orders');
     } catch (err) {
         res.json({ status: 'error', message: err.message });
     }
@@ -118,11 +158,13 @@ router.post('/update-order', authenticate, async (req, res, next) => {
 
 router.get('/settings', authenticateAdmin, async (req, res, next) => {
     try {
-        const [regions, warehouses] = await Promise.all([
+        const [regions, warehouses, percentage] = await Promise.all([
             regionService.list(),
-            warehouseService.list()
+            warehouseService.list(),
+            Percentage.findOne({})
         ]);
-        res.render('setting', { title: 'App Settings', regions, warehouses });
+        const incentive = percentage ? percentage.percentage : 0;
+        res.render('setting', { title: 'App Settings', regions, warehouses, percentage: incentive });
     } catch (err) {
         next(err);
     }
@@ -149,7 +191,7 @@ router.post('/save-region', authenticateAdmin, async (req, res, next) => {
 
 router.get('/reports', authenticateAdmin, async (req, res, next) => {
     try {
-        const orders = await deliveryService.list();
+        const orders = await deliveryService.list({ status: 'complete'});
         res.render('earnings', { title: 'Earning Report', orders });
     } catch (err) {
         next(err);
@@ -165,13 +207,22 @@ router.get('/truckers', authenticateAdmin, async (req, res, next) => {
     }
 });
 
+router.get('/stores', authenticateAdmin, async (req, res, next) => {
+    try {
+        const stores = await userService.list({ role: 'store' });
+        res.render('stores', { title: 'Manage Stores', stores });
+    } catch (err) {
+        next(err);
+    }
+});
+
 router.post('/update-user', authenticateAdmin, async (req, res) => {
     try {
         const { action, user_id } = req.body;
         if (action == 'delete') {
             await userService.removeUser(user_id);
         } else {
-            await userService.update(user_id, { status: action });
+            await userService.updateUser({ status: action }, user_id);
         }
         res.json({ status: true });
     } catch (err) {
@@ -179,9 +230,20 @@ router.post('/update-user', authenticateAdmin, async (req, res) => {
     }
 });
 
+router.post('/delete-region', authenticateAdmin, async (req, res) => {
+    try {
+        const { regionId } = req.body;
+        await regionService.deleteOne(regionId);
+        
+    } catch(err) {
+        res.json({ status: 'error', message: err.message });
+    }
+});
+
+
 router.get('/logout', (req, res, next) => {
     req.session.destroy();
-    res.redirect('/login');
+    res.redirect('/');
 });
 
 router.get('/activate/:email_hash/:hash_string', async (req, res, next) => {
@@ -218,10 +280,13 @@ router.get('/reset-password', async (req, res, next) => {
 router.post('/send-reset-email', async (req, res, next) => {
     try {
         const { email } = req.body;
-        const user = await userService.view(email);
-        let message = 'A password reset link has been sent to your email';
-        emailService.sendPasswordResetLink(email);
-        if (!user) message = 'There is no account associated with this email';
+        const user = await userService.findOne({ email });
+        let message;
+        if (user) {
+            message = 'A password reset link has been sent to your email';
+            emailService.sendPasswordResetLink(user);
+        } else
+            message = 'There is no account associated with this email';
         res.render('reset-password', { title: 'Reset Password', message });
     } catch (err) {
         next(err);
@@ -261,10 +326,15 @@ router.post('/update-incentive', authenticateAdmin, async (req, res, next) => {
     try {
         const { percentage } = req.body;
         if (isNaN(percentage)) {
-            throw new handleError(400, 'Percentage must be a number');
+            throw new handleError(400, 'Percentage must be a number');  
         }
-        await Percentage.update({ percentage }, { where: {} });
-        res.redirect('/reports');
+        const percent = await Percentage.findOne({});
+        if (percent) {
+            await Percentage.update({ percentage }, { where: {} });
+        } else {
+            await Percentage.create({ percentage });
+        }
+        res.redirect('/settings');
     } catch (err) {
         next(err);
     }

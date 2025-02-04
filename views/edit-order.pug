@@ -1,0 +1,97 @@
+extends layout 
+
+block styleBlock 
+    style.
+        select.form-input { height: 40px }
+
+        .form-input {
+            display: block;
+            width: 100%;
+            min-height: 60px;
+            padding: 18px 25px;
+            font-weight: 300;
+            line-height: 24px;
+            color: #29293a;
+            background-color: #f2f3f9;
+            background-image: none;
+            border: 0px solid #f2f3f9;
+            border-radius: 35px;
+            -webkit-appearance: none;
+        }
+
+
+block content 
+    .container 
+        .row
+            .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
+                .row.justify-content-center
+                    .col-md-5
+                        h5.text-center.mb-4 Edit Delivery Request
+                        form(method="post" action="/update-delivery")#form-delivery-request.px-md-0.px-4.text-center
+                            .mb-3
+                                label.form-label(for='') Order Number
+                                input.form-input#order(type='text' name="orderNo" aria-describedby='OrderNo' value=`${order.orderNo}` Required)
+                            .mb-3
+                                label.form-label(for='') Warehouse
+                                select.form-input#orderWarehouse(name='warehouseId' required)
+                                    option(value='') -- Warehouses --
+                                    each warehouse in warehouses 
+                                        if order.warehouseId == warehouse.id
+                                            option(value=`${warehouse.id}` selected)= warehouse.name
+                                        else    
+                                            option(value=`${warehouse.id}`)= warehouse.name
+                            .mb-3
+                                label.form-label(for='') Cost
+                                input.form-input#orderCost(type='text' name="cost" value=`${order.cost}` aria-describedby='Cost' Required)
+                            .mb-4
+                                label.form-label(for='') Furniture Size (in clubic ft)
+                                input.form-input#orderSize(type='text' name="orderSize" value=`${order.orderSize}` Required)
+                            .d-flex.align-items-center.justify-content-between.mb-4
+                            input(type='hidden' name='order_id' value=`${order.id}`)
+
+                            button.btn.btn-dark.btn-lg.w-100.py-8.mb-4.rounded-5#preview(type='button' data-bs-toggle='modal' data-bs-target='#previewModal' style='border-radius: 50px') Update Request
+                            a.btn.btn-light.btn-lg.w-100.py-8.mb-4.rounded-5#preview(href='/delivery-orders' style='border-radius: 50px') Cancel
+
+block modals
+    #previewModal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5#staticBackdropLabel.modal-title Preview Details
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    table.table
+                        thead.table-light
+                            tr
+                                th Order Details
+                                th
+                        tbody 
+                            tr
+                                th Order Number 
+                                td#orderNo
+                            tr 
+                                th Warehouse 
+                                td#warehouse 
+                            tr
+                                th Cost 
+                                td#cost 
+                            tr 
+                                th Size 
+                                td#size
+                .modal-footer
+                    button.btn.btn-light.py-8.mb-4.rounded-2(type='button' data-bs-dismiss='modal' aria-label='Close') Go Back
+                    button.btn.btn-dark.py-8.mb-4.rounded-2#confirm(type='button') Confirm Details
+
+block scriptBlock 
+    script. 
+        document.getElementById('preview').addEventListener('click', function() {
+            $('#orderNo').text($('#order').val());
+            $('#warehouse').text($('#orderWarehouse option:selected').text())
+            $('#cost').text($('#orderCost').val());
+            $('#size').text($('#orderSize').val());
+        });
+
+
+        document.getElementById('confirm').addEventListener('click', function() {
+            $('#form-delivery-request').submit();
+        });

@@ -1,0 +1,88 @@
+extends layout 
+
+block styleBlock 
+    style.
+        select.form-input { height: 40px }
+
+        .form-input {
+            display: block;
+            width: 100%;
+            min-height: 60px;
+            padding: 18px 25px;
+            font-weight: 300;
+            line-height: 24px;
+            color: #29293a;
+            background-color: #f2f3f9;
+            background-image: none;
+            border: 0px solid #f2f3f9;
+            border-radius: 35px;
+            -webkit-appearance: none;
+        }
+
+
+block content 
+    .container 
+        .row
+            .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
+                .row.justify-content-center
+                    .col-md-5
+                        h4.text-center.mb-4 New Delivery Request
+                        form(method="post" action="/request-delivery")#form-delivery-request.px-md-0.px-4
+                            .mb-3
+                                input.form-input#order(type='text' name="orderNo" placeholder='Order Number' aria-describedby='OrderNo' Required)
+                            .mb-3
+                                select.form-input#orderWarehouse(name='warehouseId' required)
+                                    option(value='') -- Warehouses --
+                                    each warehouse in warehouses 
+                                        option(value=`${warehouse.id}`)= warehouse.name
+                            .mb-3
+                                input.form-input#orderCost(type='text' name="cost" placeholder='Cost' aria-describedby='Cost' Required)
+                            .mb-3
+                                input.form-input#orderSize(type='text' name="orderSize" placeholder='Furniture Size (in clubic ft)' Required)
+                            .d-flex.align-items-center.justify-content-between.mb-4
+
+                            button.btn.btn-dark.btn-lg.w-100.py-8.mb-4.rounded-5#preview(type='button' data-bs-toggle='modal' data-bs-target='#previewModal' style='border-radius: 50px') Send Request
+
+block modals
+    #previewModal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5#staticBackdropLabel.modal-title Preview Details
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    table.table
+                        thead.table-light
+                            tr
+                                th Order Details
+                                th
+                        tbody 
+                            tr
+                                th Order Number 
+                                td#orderNo
+                            tr 
+                                th Warehouse 
+                                td#warehouse 
+                            tr
+                                th Cost 
+                                td#cost 
+                            tr 
+                                th Size 
+                                td#size
+                .modal-footer
+                    button.btn.btn-light.py-8.mb-4.rounded-2(type='button' data-bs-dismiss='modal' aria-label='Close') Go Back
+                    button.btn.btn-dark.py-8.mb-4.rounded-2#confirm(type='button') Confirm Details
+
+block scriptBlock 
+    script. 
+        document.getElementById('preview').addEventListener('click', function() {
+            $('#orderNo').text($('#order').val());
+            $('#warehouse').text($('#orderWarehouse option:selected').text())
+            $('#cost').text($('#orderCost').val());
+            $('#size').text($('#orderSize').val());
+        });
+
+
+        document.getElementById('confirm').addEventListener('click', function() {
+            $('#form-delivery-request').submit();
+        });

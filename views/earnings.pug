@@ -12,16 +12,26 @@ block content
     .container 
         .row
             .col-md-12(style="background: #fff; border-radius: 10px").pt-4.px-0
-                table.table.table-striped
+                .mb-4.ps-4.d-none
+                    form(action='/update-incentive' method='post')#filter-orders
+                        .row
+                            .col-md-3.col-sm-8
+                                select.form-control.form-control-sm(name='store')
+                                    option(value='') -- Select Store --
+                            .col-md-2
+                                button.btn.btn-secondary(type='submit') 
+                                    i.fa.fa-save  
+                                    | &nbsp;Filter
+                table.table.table-striped.nowrap#reports
                     thead 
                         tr 
-                            th Date 
+                            th(data-priority="1") Date 
                             th Warehouse 
                             th Store
                             th Order#
                             th Size (ft<sup>3</sup>)
                             th.text-end Cost ($)
-                            th %
+                            th Commission
                             th.text-end Gain ($)
                     tbody 
                         each order in orders 
@@ -36,11 +46,13 @@ block content
                                 td= order.orderNo 
                                 td= order.orderSize 
                                     | ft<sup>3</sup>
-                                td.text-end= view.formatCurrency(order.cost)
-                                td= order.percentage 
+                                td.text-end $#{view.formatCurrency(order.cost)}
+                                td.text-center= order.percentage 
                                     | %
                                 td.text-end $#{view.formatCurrency((order.percentage / 100) * order.cost)}
 
 
 block scriptBlock
     script. 
+
+        

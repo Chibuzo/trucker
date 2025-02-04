@@ -4,11 +4,11 @@ After=network.target
 Requires=After=mysql.service       # Requires the mysql service to run fir>
 
 [Service]
-WorkingDirectory=/home/ubuntu/cases
+WorkingDirectory=/home/ubuntu/trucker
 ExecStart=npm start
 Restart=on-failure
 
-Environment=NODE_ENV=development PORT=80 DB_USER=chibuzo DB_PASSWORD= DB_HOST=44.202.106.89 DB_NAME=my+s3cretDb#
+Environment=NODE_ENV=development PORT=80 DB_USER=chibuzo DB_PASSWORD=my+s3cretDb# DB_HOST=44.202.106.89 DB_NAME=truck
 
 
 [Install]

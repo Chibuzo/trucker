@@ -3,7 +3,6 @@ const emailService = require('../services/emailService');
 const bcrypt = require('bcryptjs');
 const { Buffer } = require('buffer');
 const crypto = require('crypto');
-const path = require('path');
 const saltRounds = 10;
 const { ErrorHandler } = require('../helpers/errorHandler');
 
@@ -57,6 +56,7 @@ const findOne = async criteria => {
 }
 
 const view = async criteria => {
+    console.log(criteria)
     const user = await findOne(criteria);
     if (!user) throw new ErrorHandler(404, 'User not found');
     return sanitize(user);
@@ -101,7 +101,7 @@ const changePassword = async (newPassword, user_id) => {
 
 const list = async (criteria = {}) => {
     const users = await User.findAll({
-        where: criteria,
+        where: { ...criteria, deleted: false },
         order: [
             ['createdAt', 'DESC']
         ]
@@ -114,14 +114,8 @@ const updateUser = async (userData, id) => {
 }
 
 
-const uploadProfilePhoto = async (photoFile, userId) => {
-    const allowedFileTypes = ['image/gif', 'image/png', 'image/jpeg'];
-    if (!allowedFileTypes.includes(photoFile.mimetype)) {
-        throw new ErrorHandler(400, 'Unsupported file type');
-    }
-    const key = `profile-photo/${crypto.randomUUID()}${path.extname(photoFile.name)}`;
-    const { Location } = await s3Upload(S3_BUCKET, key, photoFile.data);
-    return User.update({ profilePhoto: Location }, { where: { id: userId } });
+const removeUser = async user_id => {
+    return updateUser({ deleted: true }, user_id);
 }
 
 
@@ -150,9 +144,10 @@ module.exports = {
     activateAccount,
     list,
     view,
+    findOne,
     updateUser,
     verifyPasswordResetLink,
     changePassword,
-    uploadProfilePhoto,
+    removeUser,
     createAdmin
 }

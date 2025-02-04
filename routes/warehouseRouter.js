@@ -25,25 +25,24 @@ router.get('/', authenticate, async (req, res, next) => {
     }
 });
 
-router.put('/:id', authenticate, async (req, res, next) => {
+router.post('/update', authenticate, async (req, res, next) => {
     try {
-        const { id } = req.params;
-        await warehouseService.update(id, req.body);
-        res.redirectt('/admin/warehouses');
+        const { id, name, regionId } = req.body;
+        await warehouseService.update(id, { name, regionId });
+        res.redirect('/settings');
     } catch (err) {
         logger.error('Updating Warehouse failed', { data: err });
         next(err);
     }
 });
 
-router.delete('/:id', authenticate, async (req, res, next) => {
+router.delete('/:id', authenticate, async (req, res) => {
     try {
         const { id } = req.params;
         await warehouseService.deleteOne(id);
-        res.redirectt('/admin/warehouses');
+        res.json({ status: 'success' });
     } catch (err) {
-        logger.error('Deleting Warehouse failed', { data: err });
-        next(err);
+        res.json({ status: 'error', message: err.message });
     }
 });
 

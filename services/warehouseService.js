@@ -1,6 +1,5 @@
 const { Warehouse, DeliveryRegion } = require('../models');
 const { ErrorHandler } = require('../helpers/errorHandler');
-const deliveryRegion = require('../models/deliveryRegion');
 
 
 const create = async (warehouseData) => {

@@ -10,6 +10,7 @@ head
     link(rel='stylesheet' href='/css/fontawesome-min.css')
     link(href='/css/style.css' rel="stylesheet")
     link(rel='stylesheet' href='/css/bootstrap.min.css')
+    link(rel='stylesheet' href="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-2.0.8/b-3.0.2/b-html5-3.0.2/b-print-3.0.2/date-1.5.2/r-3.0.2/sp-2.3.1/datatables.min.css")
     style. 
         body {
             background: #f9f9f9
@@ -19,11 +20,14 @@ head
             border-color: #eed484;
             color: #333
         }
+
+        //- .fa { color: #999 }
+
     block styleBlock
     title Osman Delivery Services
 body
     .container 
-        header.d-flex.flex-wrap.align-items-center.justfy-content-center.justfy-content-md-between.py-3.mb-4
+        header.d-flex.flex-wrap.align-items-center.justfy-content-center.justfy-content-md-between.py-3.mb-1
             //- h3.mt-2 Osman
             //- div 
             //-     a.d-flex.align-items-center.col-md-3.mb-2.mb-md-0.text-dark.text-decoration-none(href='/') Home
@@ -39,6 +43,8 @@ body
                             a.nav-link.text-dark(href='/reports') Reports
                         li.nav-item
                             a.nav-link.text-dark(href='/truckers') Truckers
+                        li.nav-item
+                            a.nav-link.text-dark(href='/stores') Stores
                         li.nav-item
                             a.nav-link.text-dark(href='/settings') Settings
                     else if trucker 
@@ -76,6 +82,24 @@ body
 
 
     script(src='/libs/bootstrap/dist/js/bootstrap.bundle.min.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js")
+    script(src="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-2.0.8/b-3.0.2/b-html5-3.0.2/b-print-3.0.2/date-1.5.2/r-3.0.2/sp-2.3.1/datatables.min.js")
+    script. 
+        async function postForm(url, data) {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            });
+            return res.json();
+        }
+
+        $('#reports').DataTable( {
+            responsive: true
+        });
 
 
     block scriptBlock
