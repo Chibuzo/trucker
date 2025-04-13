@@ -10,6 +10,7 @@ const regionService = require('../services/deliveryRegionService');
 const warehouseService = require('../services/warehouseService');
 const logger = require('../services/logService');
 const { Percentage } = require('../models');
+const { Op } = require('sequelize');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -128,17 +129,19 @@ router.get('/my-trips', authenticate, async (req, res, next) => {
     }
 });
 
-router.post('/update-order', authenticate, async (req, res, next) => {
+router.post('/update-orders', authenticate, async (req, res, next) => {
     try {
         const { id, role } = req.session.user;
-        const { action, order_id } = req.body; 
+        const { action, orderIds } = req.body;
         const criteria = { status: action };
         if (role == 'trucker') criteria.truckerId = id;
-        await deliveryService.update(order_id, criteria);
+        await deliveryService.update(orderIds, criteria);
         if (role == 'trucker' || role == 'admin') {
-            const order = await deliveryService.view({ id: order_id });
-            const store = await userService.view({ id: order.storeId });
-            emailService.notifyStore(store, 'Your order status has changed', action);
+            const orders = await deliveryService.list({ id: { [Op.in]: orderIds } });
+            orders.map(async order => {
+                const store = await userService.view({ id: order.storeId });
+                emailService.notifyStore(store, 'Your order status has changed', action);
+            });
         }
         res.json({ status: 'success' });
     } catch (err) {
@@ -191,7 +194,7 @@ router.post('/save-region', authenticateAdmin, async (req, res, next) => {
 
 router.get('/reports', authenticateAdmin, async (req, res, next) => {
     try {
-        const orders = await deliveryService.list({ status: 'complete'});
+        const orders = await deliveryService.list({ status: 'complete' });
         res.render('earnings', { title: 'Earning Report', orders });
     } catch (err) {
         next(err);
@@ -234,8 +237,8 @@ router.post('/delete-region', authenticateAdmin, async (req, res) => {
     try {
         const { regionId } = req.body;
         await regionService.deleteOne(regionId);
-        
-    } catch(err) {
+
+    } catch (err) {
         res.json({ status: 'error', message: err.message });
     }
 });
@@ -326,7 +329,7 @@ router.post('/update-incentive', authenticateAdmin, async (req, res, next) => {
     try {
         const { percentage } = req.body;
         if (isNaN(percentage)) {
-            throw new handleError(400, 'Percentage must be a number');  
+            throw new handleError(400, 'Percentage must be a number');
         }
         const percent = await Percentage.findOne({});
         if (percent) {

@@ -2,7 +2,6 @@ const { Delivery, User, Warehouse, DeliveryRegion, Percentage } = require('../mo
 const { ErrorHandler } = require('../helpers/errorHandler');
 const warehouseService = require('./warehouseService');
 const { Op } = require('sequelize');
-const emailService = require('./emailService');
 const userService = require('./userService');
 
 
@@ -72,7 +71,11 @@ const update = async (id, deliveryData) => {
     // if (order.truckerId && order.truckerId != truckerId) {
     //     throw new ErrorHandler(400, 'You are not allowed to change the status of the delivery.');
     // }
-    return Delivery.update(deliveryData, { where: { id } });
+    if (Array.isArray(id)) {
+        return Delivery.update(deliveryData, { where: { id: { [Op.in]: id } } });
+    } else {
+        return Delivery.update(deliveryData, { where: { id } });
+    }
 }
 
 module.exports = {
