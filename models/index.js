@@ -11,7 +11,7 @@ const db = {};
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 // sync all tables
 (async function () {
-    // await sequelize.sync({ alter: true });
+    await sequelize.sync({ alter: true });
 })();
 
 fs
