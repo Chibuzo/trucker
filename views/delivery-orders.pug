@@ -240,8 +240,8 @@ block content
                                             a(href=`/edit-delivery/${order.id}` title='Edit').me-2
                                                 i.fa.fa-pencil(style='color: grey')  
 
-                                            a(href="#" data-action='cancelled' data-orderId=`${order.id}` id='cancelOrderBtn' title='Cancel Request').me-2.disabled
-                                                i.fa.fa-times(style='color: #cc0000')
+                                            a(href="#" title='Cancel Request').me-2.disabled
+                                                i.fa.fa-times(style='color: #cc0000' data-action='cancelled' data-orderId=`${order.id}` id='cancelOrderBtn')
 
 
 block modals
