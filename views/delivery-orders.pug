@@ -1,326 +1,329 @@
 extends layout 
 
 block styleBlock 
-  style.
+    style.
 
-    select.form-control { height: 40px }
+        select.form-control { height: 40px }
 
-    .dropdown-toggle::after {
-      content: unset !important
-    }
+        .dropdown-toggle::after {
+            content: unset !important
+        }
 
-    input[type=checkbox] {
-      visibility: hidden;
-    }
-    .option {
-      display: block;
-      position: relative;
-      padding-left: 25px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .customcheckbox {
-      position: absolute;
-      top: 6px;
-      left: 0;
-      height: 15px;
-      width: 15px;
-      border: 1px solid #000;
-    }
-    .option input:checked ~ .customcheckbox {
-      background-color: #eed484;
-    }
-    .customcheckbox:after {
-      content: "";
-      position: absolute;
-      display: none;
-    }
-    .option input:checked ~ .customcheckbox:after {
-      display: block;
-    }
+        input[type=checkbox] {
+            visibility: hidden;
+        }
+        .option {
+            display: block;
+            position: relative;
+            padding-left: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .customcheckbox {
+            position: absolute;
+            top: 6px;
+            left: 0;
+            height: 15px;
+            width: 15px;
+            border: 1px solid #000;
+        }
+        .option input:checked ~ .customcheckbox {
+            background-color: #eed484;
+        }
+        .customcheckbox:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        .option input:checked ~ .customcheckbox:after {
+            display: block;
+        }
 
-    .customcheckbox:after {
-      content: "";
-      position: absolute;
-      display: none;
-    }
-    .option input:checked ~ .customcheckbox:after {
-      display: block;
-    }
-    .option .customcheckbox:after {
-      left: 5px;
-      bottom: 3px;
-      width: 4px;
-      height: 12px;
-      border: solid white;
-      border-width: 0 2px 2px 0;
-      -webkit-transform: rotate(45deg);
-      -ms-transform: rotate(45deg);
-      transform: rotate(45deg);
-    }
+        .customcheckbox:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        .option input:checked ~ .customcheckbox:after {
+            display: block;
+        }
+        .option .customcheckbox:after {
+            left: 5px;
+            bottom: 3px;
+            width: 4px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
 
 block content 
-  .container 
-    .row
-      .col-md-12.dtTable(style="background: #fff; border-radius: 10px").pt-4.px-0
-        if admin
-          //- .mb-4.ps-4
-          //-     form(action='/delivery-orders' method='get')#filter-orders
-          //-         .row
-          //-             .col-md-3.col-sm-8
-          //-                 select.form-control(name='status' required)
-          //-                     option(value='') -- Filter by status --
-          //-                     option(value='picked up') Picked Up
-          //-                     option(value='pending') Pending
-          //-                     option(value='delivered') Delivered 
-          //-                     option(value='complete') Completed
-          //-             .col-md-2
-          //-                 button.btn.btn-secondary(type='submit') 
-          //-                     i.fa.fa-filter  
-          //-                     | &nbsp;Filter
+    .container 
+        .row
+            .col-md-12.dtTable(style="background: #fff; border-radius: 10px").pt-4.px-0
+                if admin
+                    //- .mb-4.ps-4
+                    //-     form(action='/delivery-orders' method='get')#filter-orders
+                    //-         .row
+                    //-             .col-md-3.col-sm-8
+                    //-                 select.form-control(name='status' required)
+                    //-                     option(value='') -- Filter by status --
+                    //-                     option(value='picked up') Picked Up
+                    //-                     option(value='pending') Pending
+                    //-                     option(value='delivered') Delivered 
+                    //-                     option(value='complete') Completed
+                    //-             .col-md-2
+                    //-                 button.btn.btn-secondary(type='submit') 
+                    //-                     i.fa.fa-filter  
+                    //-                     | &nbsp;Filter
 
-        if admin || trucker
-          table.table.table-striped#reports
-            thead 
-              tr 
-                th Date 
-                th Warehouse 
-                th Store
-                th Order#
-                th Size (ft<sup>3</sup>)
-                th.text-end Cost ($)
-                th Paid
-                th Status
-                th Trucker
-                td.align-center
-                  .dropdown
-                    .pt-2.bg-light.text-center.dropdown-toggle#dropdownMenu(data-bs-toggle="dropdown" aria-expanded="false" style='border-radius: 50%; width: 38px; height: 38px; cursor: pointer')
-                      i.fa.fa-ellipsis-v
-                    ul.dropdown-menu(aria-labelledby="dropdownMenu") 
-                      if admin
-                        li 
-                          a.dropdown-item(href="#" data-action="delivered") Delivered
-                        li 
-                          a.dropdown-item(href="#" data-action="complete") Complete
-                        li 
-                          a.dropdown-item(href="#" data-action="cancelled") Cancel
-                      else
-                        if page == 'orders'
-                          li  
-                            a.dropdown-item(data-action="picked up") Pick Up 
-                          li 
-                            a.dropdown-item.disabled(href="#" data-action="delivered") Delivered
-                        else if page == 'trips'
-                          li  
-                            a.dropdown-item.disabled(href="#" data-action="picked up") Pick Up 
-                          li 
-                            a.dropdown-item(href="#" data-action="delivered") Delivered
-                //- th.checkbox 
-                //-     label.option
-                //-         input#tick-all(type="checkbox") 
-                //-         span.customcheckbox
-            tbody 
-              each order in orders 
-                tr 
-                  td.ps-3 #{view.formatDate(order.createdAt)} 
-                    .text-muted 
-                      small #{view.getTime(order.createdAt)}
-                  td #{order.Warehouse.name} 
-                    div 
-                      small.text-muted [ #{order.Warehouse.DeliveryRegion.name} ]
-                  td
-                    div 
-                      | #{order.store.fullname}
-                    //- .mt-2 
-                    //-     | #{order.User.address}
-                  td= order.orderNo 
-                  td= order.orderSize 
-                    | ft<sup>3</sup>
-                  td.text-end 
-                    if admin 
-                      | $#{view.formatCurrency(order.cost)}
-                    else 
-                      p -
-                  if order.status == 'complete'
-                    td Yes
-                  else 
-                    td No
-                  td
-                    if (order.status == 'pending') 
-                      span.badge.bg-warning
-                        | #{order.status}
-                    else if (order.status == 'complete') 
-                      span.badge.bg-success
-                        | #{order.status}
-                    else if (order.status == 'delivered') 
-                      span.badge.bg-info
-                        | #{order.status}
-                    else if (order.status == 'picked up') 
-                      span.badge.bg-secondary
-                        | #{order.status}
-                    else if (order.status == 'cancelled') 
-                      span.badge.bg-danger
-                        | #{order.status}
-                  td= order.trucker.fullname && order.trucker.fullname.split(' ')[0]
-                  td.checkbox 
-                    label.option
-                      input.check(type="checkbox" name="check_p" id=order.id)
-                      span.customcheckbox
-                  //- td.align-center
-                  //-     .dropdown
-                  //-         .pt-2.bg-light.text-center.dropdown-toggle#dropdownMenu(data-bs-toggle="dropdown" aria-expanded="false" style='border-radius: 50%; width: 38px; height: 38px; cursor: pointer')
-                  //-             i.fa.fa-ellipsis-v
-                  //-         ul.dropdown-menu(aria-labelledby="dropdownMenu" data-order_id=`${order.id}`) 
-                  //-             if admin
-                  //-                 li 
-                  //-                     a.dropdown-item(href="#" data-action="delivered") Delivered
-                  //-                 li 
-                  //-                     a.dropdown-item(href="#" data-action="complete") Complete
-                  //-                 li 
-                  //-                     a.dropdown-item(href="#" data-action="cancelled") Cancel
-                  //-             else
-                  //-                 if page == 'orders'
-                  //-                     li  
-                  //-                         a.dropdown-item(data-bs-toggle='' data-bs-target='#invoiceModal' data-action="picked up") Pick Up 
-                  //-                     li 
-                  //-                         a.dropdown-item.disabled(href="#" data-action="delivered") Delivered
-                  //-                 else if page == 'trips'
-                  //-                     li  
-                  //-                         a.dropdown-item.disabled(href="#" data-action="picked up") Pick Up 
-                  //-                     li 
-                  //-                         a.dropdown-item(href="#" data-action="delivered") Delivered
+                if admin || trucker
+                    table.table.table-striped#reports
+                        thead 
+                            tr 
+                                th Date 
+                                th Warehouse 
+                                th Store
+                                th Order#
+                                th Size (ft<sup>3</sup>)
+                                th.text-end Cost ($)
+                                th Paid
+                                th Status
+                                th Trucker
+                                td.align-center
+                                    .dropdown
+                                        .pt-2.bg-light.text-center.dropdown-toggle#dropdownMenu(data-bs-toggle="dropdown" aria-expanded="false" style='border-radius: 50%; width: 38px; height: 38px; cursor: pointer')
+                                            i.fa.fa-ellipsis-v
+                                        ul.dropdown-menu(aria-labelledby="dropdownMenu") 
+                                            if admin
+                                                li 
+                                                    a.dropdown-item(href="#" data-action="delivered") Delivered
+                                                li 
+                                                    a.dropdown-item(href="#" data-action="complete") Complete
+                                                li 
+                                                    a.dropdown-item(href="#" data-action="cancelled") Cancel
+                                            else
+                                                if page == 'orders'
+                                                    li  
+                                                        a.dropdown-item(data-action="picked up") Pick Up 
+                                                    li 
+                                                        a.dropdown-item.disabled(href="#" data-action="delivered") Delivered
+                                                else if page == 'trips'
+                                                    li  
+                                                        a.dropdown-item.disabled(href="#" data-action="picked up") Pick Up 
+                                                    li 
+                                                        a.dropdown-item(href="#" data-action="delivered") Delivered
+                                //- th.checkbox 
+                                //-     label.option
+                                //-         input#tick-all(type="checkbox") 
+                                //-         span.customcheckbox
+                        tbody 
+                            each order in orders 
+                                tr 
+                                    td.ps-3 #{view.formatDate(order.createdAt)} 
+                                        .text-muted 
+                                            small #{view.getTime(order.createdAt)}
+                                    td #{order.Warehouse.name} 
+                                        div 
+                                            small.text-muted [ #{order.Warehouse.DeliveryRegion.name} ]
+                                    td
+                                        div 
+                                            | #{order.store.fullname}
+                                        //- .mt-2 
+                                        //-     | #{order.User.address}
+                                    td= order.orderNo 
+                                    td= order.orderSize 
+                                        | ft<sup>3</sup>
+                                    td.text-end 
+                                        if admin 
+                                            | $#{view.formatCurrency(order.cost)}
+                                        else 
+                                            p -
+                                    if order.status == 'complete'
+                                        td Yes
+                                    else 
+                                        td No
+                                    td
+                                        if (order.status == 'pending') 
+                                            span.badge.bg-warning
+                                                | #{order.status}
+                                        else if (order.status == 'complete') 
+                                            span.badge.bg-success
+                                                | #{order.status}
+                                        else if (order.status == 'delivered') 
+                                            span.badge.bg-info
+                                                | #{order.status}
+                                        else if (order.status == 'picked up') 
+                                            span.badge.bg-secondary
+                                                | #{order.status}
+                                        else if (order.status == 'cancelled') 
+                                            span.badge.bg-danger
+                                                | #{order.status}
+                                    td= order.trucker.fullname && order.trucker.fullname.split(' ')[0]
+                                    td.checkbox 
+                                        label.option
+                                            input.check(type="checkbox" name="check_p" id=order.id)
+                                            span.customcheckbox
+                                    //- td.align-center
+                                    //-     .dropdown
+                                    //-         .pt-2.bg-light.text-center.dropdown-toggle#dropdownMenu(data-bs-toggle="dropdown" aria-expanded="false" style='border-radius: 50%; width: 38px; height: 38px; cursor: pointer')
+                                    //-             i.fa.fa-ellipsis-v
+                                    //-         ul.dropdown-menu(aria-labelledby="dropdownMenu" data-order_id=`${order.id}`) 
+                                    //-             if admin
+                                    //-                 li 
+                                    //-                     a.dropdown-item(href="#" data-action="delivered") Delivered
+                                    //-                 li 
+                                    //-                     a.dropdown-item(href="#" data-action="complete") Complete
+                                    //-                 li 
+                                    //-                     a.dropdown-item(href="#" data-action="cancelled") Cancel
+                                    //-             else
+                                    //-                 if page == 'orders'
+                                    //-                     li  
+                                    //-                         a.dropdown-item(data-bs-toggle='' data-bs-target='#invoiceModal' data-action="picked up") Pick Up 
+                                    //-                     li 
+                                    //-                         a.dropdown-item.disabled(href="#" data-action="delivered") Delivered
+                                    //-                 else if page == 'trips'
+                                    //-                     li  
+                                    //-                         a.dropdown-item.disabled(href="#" data-action="picked up") Pick Up 
+                                    //-                     li 
+                                    //-                         a.dropdown-item(href="#" data-action="delivered") Delivered
 
 
 
-        else if user 
-          .row.px-3.mb-4
-            .col
-              h5 Delivery Requests
-            .col
-              a.btn.btn-secondary.float-end(href='/new-delivery') New Delivery 
-          table.table.table-striped#reports
-            thead 
-              tr 
-                th Date 
-                th Warehouse 
-                th Order# 
-                th Size (ft<sup>3</sup>)
-                th Cost ($)
-                th Status
-                th.text-center(width='180') Action
-            tbody 
-              each order in orders 
-                tr 
-                  td= view.formatDate(order.createdAt)
-                  td #{order.Warehouse.name} 
-                    div 
-                      small.text-muted [ #{order.Warehouse.DeliveryRegion.name} ]
-                  td= order.orderNo 
-                  td= order.orderSize 
-                    | ft<sup>3</sup>
-                  td.text-end $#{view.formatCurrency(order.cost)}
-                  td
-                    if (order.status == 'pending') 
-                      span.badge.bg-warning
-                        | #{order.status}
-                    else if (order.status == 'complete') 
-                      span.badge.bg-success
-                        | #{order.status}
-                    else if (order.status == 'delivered') 
-                      span.badge.bg-info
-                        | #{order.status}
-                    else if (order.status == 'picked up') 
-                      span.badge.bg-secondary
-                        | #{order.status}
-                    else if (order.status == 'cancelled') 
-                      span.badge.bg-danger
-                        | #{order.status}
-                  td.text-center
-                    if order.status == 'pending'
-                      a(href=`/edit-delivery/${order.id}` title='Edit').me-2
-                        i.fa.fa-pencil(style='color: grey')  
+                else if user 
+                    .row.px-3.mb-4
+                        .col
+                            h5 Delivery Requests
+                        .col
+                            a.btn.btn-secondary.float-end(href='/new-delivery') New Delivery 
+                    table.table.table-striped#reports
+                        thead 
+                            tr 
+                                th Date 
+                                th Warehouse 
+                                th Order# 
+                                th Size (ft<sup>3</sup>)
+                                th Cost ($)
+                                th Status
+                                th.text-center(width='180') Action
+                        tbody 
+                            each order in orders 
+                                tr 
+                                    td= view.formatDate(order.createdAt)
+                                    td #{order.Warehouse.name} 
+                                        div 
+                                            small.text-muted [ #{order.Warehouse.DeliveryRegion.name} ]
+                                    td= order.orderNo 
+                                    td= order.orderSize 
+                                        | ft<sup>3</sup>
+                                    td.text-end $#{view.formatCurrency(order.cost)}
+                                    td
+                                        if (order.status == 'pending') 
+                                            span.badge.bg-warning
+                                                | #{order.status}
+                                        else if (order.status == 'complete') 
+                                            span.badge.bg-success
+                                                | #{order.status}
+                                        else if (order.status == 'delivered') 
+                                            span.badge.bg-info
+                                                | #{order.status}
+                                        else if (order.status == 'picked up') 
+                                            span.badge.bg-secondary
+                                                | #{order.status}
+                                        else if (order.status == 'cancelled') 
+                                            span.badge.bg-danger
+                                                | #{order.status}
+                                    td.text-center
+                                        if order.status == 'pending'
+                                            a(href=`/edit-delivery/${order.id}` title='Edit').me-2
+                                                i.fa.fa-pencil(style='color: grey')  
 
-                      a(href="#" onClick=`return cancelOrder(${order.id})` title='Cancel Request').me-2.disabled
-                        i.fa.fa-times(style='color: #cc0000')
+                                            a(href="#" data-action='cancelled' data-orderId=`${order.id}` id='cancelOrderBtn' title='Cancel Request').me-2.disabled
+                                                i.fa.fa-times(style='color: #cc0000')
 
 
 block modals
-  #invoiceModal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
-    .modal-dialog.modal-dialog-centered.modal-lg
-      .modal-content
-        .modal-header
-          h5#staticBackdropLabel.modal-title Upload Invoice
-          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
-        form(method="post" action="/upload-invoice")
-          .modal-body
-            .mb-3.row 
-              .col-md-4
-                input.form-control(type="file" name="invoice" placeholder="First name" aria-label="First name" required=true)
-          .modal-footer
-            button.btn.btn-secondary(type='submit') Upload Invoice
+    #invoiceModal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-lg
+            .modal-content
+                .modal-header
+                    h5#staticBackdropLabel.modal-title Upload Invoice
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                form(method="post" action="/upload-invoice")
+                    .modal-body
+                        .mb-3.row 
+                            .col-md-4
+                                input.form-control(type="file" name="invoice" placeholder="First name" aria-label="First name" required=true)
+                    .modal-footer
+                        button.btn.btn-secondary(type='submit') Upload Invoice
 
 
 block scriptBlock
-  script. 
+    script. 
 
-    const allBoxes = document.getElementsByName("check_p");
+        const allBoxes = document.getElementsByName("check_p");
 
-    function cancelOrder(order_id) {
-      if (confirm('Are you sure you want to cancel this delivery request?')) {
-        fetch('update-order', {
-          method: 'POST', 
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ action: 'cancelled', order_id }) 
-        }).then(d => d.json())
-        .then(d => {
-          if (d.status.trim() == 'success') {
-            location.reload()
-          } else {
-            alert(d.message)
-          }
+        function cancelOrder(order_id) {
+            if (confirm('Are you sure you want to cancel this delivery request?')) {
+                fetch('update-order', {
+                    method: 'POST', 
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ action: 'cancelled', order_id }) 
+                }).then(d => d.json())
+                .then(d => {
+                    if (d.status.trim() == 'success') {
+                        location.reload()
+                    } else {
+                        alert(d.message)
+                    }
+                });
+                return false;
+            }
+        }
+
+
+        $(document).ready(function() {
+            $('.dtTable').on('click', '.dropdown-item #cancelOrderBtn', function() {
+                action = $(this).data('action');
+                let message = 'Are you sure you want to continue with this operation?';
+                if (action == 'complete') {
+                    message = 'Marking the selected deliveries as "Completed" means they\'ve delivered and paid for. Continue?'
+                } else if (action == 'delivered') {
+                    message = 'Marking the selected deliveries as "Delivered" means they\'ve delivered but not yet paid for. Continue?';
+                } else if (action == 'picked up') {
+                    message = 'Are you sure you have picked up the selected orders from the warehouse?'
+                } else if (action == 'cancelled') {
+                    message = 'Are you sure you want to cancel this delivery request?'
+                }
+                if (confirm(message)) {
+                    const orderIds = [];
+                    for (let n = 0; n < allBoxes.length; n++) {
+                        if (allBoxes[n].checked) {
+                            orderIds.push(allBoxes[n].id);
+                        }
+                    }
+                    if (action == 'cancelled') {
+                        orderIds = [$(this).data('orderid')];
+                    }
+                    const data = { action, orderIds };
+                    fetch('/update-orders', {
+                        method: 'POST', 
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data) 
+                    }).then(d => d.json())
+                    .then(d => {
+                        if (d.status.trim() == 'success') {
+                            location.reload()
+                        } else {
+                            alert(d.message)
+                        }
+                    });
+                }
+            });
         });
-        return false;
-      }
-    }
-
-
-    $(document).ready(function() {
-      $('.dtTable').on('click', '.dropdown-item', function() {
-        action = $(this).data('action');
-        let message = 'Are you sure you want to continue with this operation?';
-        if (action == 'complete') {
-          message = 'Marking the selected deliveries as "Completed" means they\'ve delivered and paid for. Continue?'
-        } else if (action == 'delivered') {
-          message = 'Marking the selected deliveries as "Delivered" means they\'ve delivered but not yet paid for. Continue?';
-        } else if (action == 'picked up') {
-          message = 'Are you sure you have picked up the selected orders from the warehouse?'
-        } else if (action == 'cancelled') {
-          message = 'Are you sure you want to cancel this delivery request?'
-        }
-        if (confirm(message)) {
-          const orderIds = [];
-          for (let n = 0; n < allBoxes.length; n++) {
-            if (allBoxes[n].checked) {
-              orderIds.push(allBoxes[n].id);
-            }
-          }
-          const data = { action, orderIds };
-          fetch('/update-orders', {
-            method: 'POST', 
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data) 
-          }).then(d => d.json())
-          .then(d => {
-            if (d.status.trim() == 'success') {
-              location.reload()
-            } else {
-              alert(d.message)
-            }
-          });
-        }
-      });
-    });
