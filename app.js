@@ -13,6 +13,18 @@ const regionRouter = require('./routes/regionRouter');
 
 var app = express();
 
+const process = require('node:process');
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Application specific logging, throwing an error, or other logic here
+});
+
+process.on('SIGINT', function () {
+    console.log('Server is shutting down...');
+    process.kill(process.pid, 'SIGTERM');
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
